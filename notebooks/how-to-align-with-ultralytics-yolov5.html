@@ -379,7 +379,7 @@ div.rendered_html tbody tr:hover {
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CUDA_DEVICE_ORDER&quot;</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;PCI_BUS_ID&quot;</span>
 <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CUDA_VISIBLE_DEVICES&quot;</span><span class="p">]</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>
 
-<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span> <span class="k">if</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span> <span class="k">else</span> <span class="s1">&#39;cpu&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -406,12 +406,12 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># img_path = &quot;https://raw.githubusercontent.com/zhiqwang/yolov5-rt-stack/master/test/assets/zidane.jpg&quot;</span>
+<span></span><span class="c1"># img_path = &quot;https://raw.githubusercontent.com/zhiqwang/yolov5-rt-stack/main/test/assets/zidane.jpg&quot;</span>
 <span class="n">img_path</span> <span class="o">=</span> <span class="s2">&quot;https://gitee.com/zhiqwang/yolov5-rt-stack/raw/master/test/assets/zidane.jpg&quot;</span>
 <span class="n">img_raw</span> <span class="o">=</span> <span class="n">get_image_from_url</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span>
 
-<span class="c1"># yolov5s6.pt is downloaded from &#39;https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5s6.pt&#39;</span>
-<span class="n">path_ultralytics_weights</span> <span class="o">=</span> <span class="s1">&#39;yolov5s6.pt&#39;</span>
+<span class="c1"># yolov5s6.pt is downloaded from &#39;https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5n6.pt&#39;</span>
+<span class="n">path_ultralytics_weights</span> <span class="o">=</span> <span class="s1">&#39;yolov5n6.pt&#39;</span>
 </pre></div>
 </div>
 </div>
@@ -435,12 +435,12 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">conf</span> <span class="o">=</span> <span class="mf">0.25</span>
+<span></span><span class="n">score_thresh</span> <span class="o">=</span> <span class="mf">0.30</span>
 <span class="n">iou</span> <span class="o">=</span> <span class="mf">0.45</span>
 
 <span class="n">model</span> <span class="o">=</span> <span class="n">load_yolov5_model</span><span class="p">(</span><span class="n">path_ultralytics_weights</span><span class="p">,</span> <span class="n">autoshape</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">model</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">conf</span>  <span class="c1"># confidence threshold (0-1)</span>
+<span class="n">model</span><span class="o">.</span><span class="n">conf</span> <span class="o">=</span> <span class="n">score_thresh</span>  <span class="c1"># confidence threshold (0-1)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">iou</span> <span class="o">=</span> <span class="n">iou</span>  <span class="c1"># NMS IoU threshold (0-1)</span>
 <span class="n">model</span><span class="o">.</span><span class="n">classes</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># (optional list) filter by class, i.e. = [0, 15, 16] for persons, cats and dogs</span>
 <span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
@@ -454,43 +454,43 @@ div.rendered_html tbody tr:hover {
 <div class="highlight"><pre>
 
                  from  n    params  module                                  arguments
-  0                -1  1      3520  yolort.v5.models.common.Conv            [3, 32, 6, 2, 2]
-  1                -1  1     18560  yolort.v5.models.common.Conv            [32, 64, 3, 2]
-  2                -1  1     18816  yolort.v5.models.common.C3              [64, 64, 1]
-  3                -1  1     73984  yolort.v5.models.common.Conv            [64, 128, 3, 2]
-  4                -1  2    115712  yolort.v5.models.common.C3              [128, 128, 2]
-  5                -1  1    295424  yolort.v5.models.common.Conv            [128, 256, 3, 2]
-  6                -1  3    625152  yolort.v5.models.common.C3              [256, 256, 3]
-  7                -1  1    885504  yolort.v5.models.common.Conv            [256, 384, 3, 2]
-  8                -1  1    665856  yolort.v5.models.common.C3              [384, 384, 1]
-  9                -1  1   1770496  yolort.v5.models.common.Conv            [384, 512, 3, 2]
- 10                -1  1   1182720  yolort.v5.models.common.C3              [512, 512, 1]
- 11                -1  1    656896  yolort.v5.models.common.SPPF            [512, 512, 5]
- 12                -1  1    197376  yolort.v5.models.common.Conv            [512, 384, 1, 1]
+  0                -1  1      1760  yolort.v5.models.common.Conv            [3, 16, 6, 2, 2]
+  1                -1  1      4672  yolort.v5.models.common.Conv            [16, 32, 3, 2]
+  2                -1  1      4800  yolort.v5.models.common.C3              [32, 32, 1]
+  3                -1  1     18560  yolort.v5.models.common.Conv            [32, 64, 3, 2]
+  4                -1  2     29184  yolort.v5.models.common.C3              [64, 64, 2]
+  5                -1  1     73984  yolort.v5.models.common.Conv            [64, 128, 3, 2]
+  6                -1  3    156928  yolort.v5.models.common.C3              [128, 128, 3]
+  7                -1  1    221568  yolort.v5.models.common.Conv            [128, 192, 3, 2]
+  8                -1  1    167040  yolort.v5.models.common.C3              [192, 192, 1]
+  9                -1  1    442880  yolort.v5.models.common.Conv            [192, 256, 3, 2]
+ 10                -1  1    296448  yolort.v5.models.common.C3              [256, 256, 1]
+ 11                -1  1    164608  yolort.v5.models.common.SPPF            [256, 256, 5]
+ 12                -1  1     49536  yolort.v5.models.common.Conv            [256, 192, 1, 1]
  13                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
  14           [-1, 8]  1         0  yolort.v5.models.common.Concat          [1]
- 15                -1  1    813312  yolort.v5.models.common.C3              [768, 384, 1, False]
- 16                -1  1     98816  yolort.v5.models.common.Conv            [384, 256, 1, 1]
+ 15                -1  1    203904  yolort.v5.models.common.C3              [384, 192, 1, False]
+ 16                -1  1     24832  yolort.v5.models.common.Conv            [192, 128, 1, 1]
  17                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
  18           [-1, 6]  1         0  yolort.v5.models.common.Concat          [1]
- 19                -1  1    361984  yolort.v5.models.common.C3              [512, 256, 1, False]
- 20                -1  1     33024  yolort.v5.models.common.Conv            [256, 128, 1, 1]
+ 19                -1  1     90880  yolort.v5.models.common.C3              [256, 128, 1, False]
+ 20                -1  1      8320  yolort.v5.models.common.Conv            [128, 64, 1, 1]
  21                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
  22           [-1, 4]  1         0  yolort.v5.models.common.Concat          [1]
- 23                -1  1     90880  yolort.v5.models.common.C3              [256, 128, 1, False]
- 24                -1  1    147712  yolort.v5.models.common.Conv            [128, 128, 3, 2]
+ 23                -1  1     22912  yolort.v5.models.common.C3              [128, 64, 1, False]
+ 24                -1  1     36992  yolort.v5.models.common.Conv            [64, 64, 3, 2]
  25          [-1, 20]  1         0  yolort.v5.models.common.Concat          [1]
- 26                -1  1    296448  yolort.v5.models.common.C3              [256, 256, 1, False]
- 27                -1  1    590336  yolort.v5.models.common.Conv            [256, 256, 3, 2]
+ 26                -1  1     74496  yolort.v5.models.common.C3              [128, 128, 1, False]
+ 27                -1  1    147712  yolort.v5.models.common.Conv            [128, 128, 3, 2]
  28          [-1, 16]  1         0  yolort.v5.models.common.Concat          [1]
- 29                -1  1    715008  yolort.v5.models.common.C3              [512, 384, 1, False]
- 30                -1  1   1327872  yolort.v5.models.common.Conv            [384, 384, 3, 2]
+ 29                -1  1    179328  yolort.v5.models.common.C3              [256, 192, 1, False]
+ 30                -1  1    332160  yolort.v5.models.common.Conv            [192, 192, 3, 2]
  31          [-1, 12]  1         0  yolort.v5.models.common.Concat          [1]
- 32                -1  1   1313792  yolort.v5.models.common.C3              [768, 512, 1, False]
- 33  [23, 26, 29, 32]  1    327420  yolort.v5.models.yolo.Detect            [80, [[19, 27, 44, 40, 38, 94], [96, 68, 86, 152, 180, 137], [140, 301, 303, 264, 238, 542], [436, 615, 739, 380, 925, 792]], [128, 256, 384, 512]]
-/opt/homebrew/lib/python3.9/site-packages/torch/nn/functional.py:718: UserWarning: Named tensors and all their associated APIs are an experimental feature and subject to change. Please do not use them for anything important until they are released as stable. (Triggered internally at  ../c10/core/TensorImpl.h:1156.)
-  return torch.max_pool2d(input, kernel_size, stride, padding, dilation, ceil_mode)
-Model Summary: 355 layers, 12626620 parameters, 12626620 gradients, 16.9 GFLOPs
+ 32                -1  1    329216  yolort.v5.models.common.C3              [384, 256, 1, False]
+ 33  [23, 26, 29, 32]  1    164220  yolort.v5.models.yolo.Detect            [80, [[19, 27, 44, 40, 38, 94], [96, 68, 86, 152, 180, 137], [140, 301, 303, 264, 238, 542], [436, 615, 739, 380, 925, 792]], [64, 128, 192, 256]]
+/home/chi/anaconda3/envs/yolo/lib/python3.8/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  /opt/conda/conda-bld/pytorch_1634272106004/work/aten/src/ATen/native/TensorShape.cpp:2157.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+Model Summary: 355 layers, 3246940 parameters, 3246940 gradients, 4.6 GFLOPs
 
 </pre></div></div>
 </div>
@@ -501,19 +501,44 @@ Model Summary: 355 layers, 12626620 parameters, 12626620 gradients, 16.9 GFLOPs
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
     <span class="n">ultralytics_dets</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">img</span><span class="p">[</span><span class="kc">None</span><span class="p">])[</span><span class="mi">0</span><span class="p">]</span>
-    <span class="n">ultralytics_dets</span> <span class="o">=</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">ultralytics_dets</span><span class="p">,</span> <span class="n">conf</span><span class="p">,</span> <span class="n">iou</span><span class="p">,</span> <span class="n">agnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">ultralytics_dets</span> <span class="o">=</span> <span class="n">non_max_suppression</span><span class="p">(</span><span class="n">ultralytics_dets</span><span class="p">,</span> <span class="n">score_thresh</span><span class="p">,</span> <span class="n">iou</span><span class="p">,</span> <span class="n">agnostic</span><span class="o">=</span><span class="kc">True</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Updating-model-weights-from-ultralytics-to-yolort-and-inference">
-<h2>Updating model weights from ultralytics to yolort and inference<a class="headerlink" href="#Updating-model-weights-from-ultralytics-to-yolort-and-inference" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">model</span> <span class="o">=</span> <span class="n">YOLO</span><span class="o">.</span><span class="n">load_from_yolov5</span><span class="p">(</span><span class="n">path_ultralytics_weights</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;r6.0&quot;</span><span class="p">)</span>
+<span></span><span class="n">ultralytics_dets</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+tensor([[7.20445e+01, 1.13266e+02, 5.26275e+02, 3.68607e+02, 8.27893e-01, 0.00000e+00],
+        [3.72172e+02, 2.75398e+01, 5.79932e+02, 3.68102e+02, 7.79096e-01, 0.00000e+00],
+        [2.08252e+02, 2.29428e+02, 2.52494e+02, 3.69399e+02, 3.11370e-01, 2.70000e+01]])
+</pre></div></div>
+</div>
+</div>
+<div class="section" id="Updating-model-weights-from-ultralytics-to-yolort-and-inference">
+<h2>Updating model weights from ultralytics to yolort and inference<a class="headerlink" href="#Updating-model-weights-from-ultralytics-to-yolort-and-inference" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">model</span> <span class="o">=</span> <span class="n">YOLO</span><span class="o">.</span><span class="n">load_from_yolov5</span><span class="p">(</span>
+    <span class="n">path_ultralytics_weights</span><span class="p">,</span>
+    <span class="n">score_thresh</span><span class="o">=</span><span class="n">score_thresh</span><span class="p">,</span>
+    <span class="n">nms_thresh</span><span class="o">=</span><span class="n">iou</span><span class="p">,</span>
+    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;r6.0&quot;</span><span class="p">,</span>
+<span class="p">)</span>
 
 <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
 
@@ -529,46 +554,46 @@ Model Summary: 355 layers, 12626620 parameters, 12626620 gradients, 16.9 GFLOPs
 <div class="highlight"><pre>
 
                  from  n    params  module                                  arguments
-  0                -1  1      3520  yolort.v5.models.common.Conv            [3, 32, 6, 2, 2]
-  1                -1  1     18560  yolort.v5.models.common.Conv            [32, 64, 3, 2]
-  2                -1  1     18816  yolort.v5.models.common.C3              [64, 64, 1]
-  3                -1  1     73984  yolort.v5.models.common.Conv            [64, 128, 3, 2]
-  4                -1  2    115712  yolort.v5.models.common.C3              [128, 128, 2]
-  5                -1  1    295424  yolort.v5.models.common.Conv            [128, 256, 3, 2]
-  6                -1  3    625152  yolort.v5.models.common.C3              [256, 256, 3]
-  7                -1  1    885504  yolort.v5.models.common.Conv            [256, 384, 3, 2]
-  8                -1  1    665856  yolort.v5.models.common.C3              [384, 384, 1]
-  9                -1  1   1770496  yolort.v5.models.common.Conv            [384, 512, 3, 2]
- 10                -1  1   1182720  yolort.v5.models.common.C3              [512, 512, 1]
- 11                -1  1    656896  yolort.v5.models.common.SPPF            [512, 512, 5]
- 12                -1  1    197376  yolort.v5.models.common.Conv            [512, 384, 1, 1]
+  0                -1  1      1760  yolort.v5.models.common.Conv            [3, 16, 6, 2, 2]
+  1                -1  1      4672  yolort.v5.models.common.Conv            [16, 32, 3, 2]
+  2                -1  1      4800  yolort.v5.models.common.C3              [32, 32, 1]
+  3                -1  1     18560  yolort.v5.models.common.Conv            [32, 64, 3, 2]
+  4                -1  2     29184  yolort.v5.models.common.C3              [64, 64, 2]
+  5                -1  1     73984  yolort.v5.models.common.Conv            [64, 128, 3, 2]
+  6                -1  3    156928  yolort.v5.models.common.C3              [128, 128, 3]
+  7                -1  1    221568  yolort.v5.models.common.Conv            [128, 192, 3, 2]
+  8                -1  1    167040  yolort.v5.models.common.C3              [192, 192, 1]
+  9                -1  1    442880  yolort.v5.models.common.Conv            [192, 256, 3, 2]
+ 10                -1  1    296448  yolort.v5.models.common.C3              [256, 256, 1]
+ 11                -1  1    164608  yolort.v5.models.common.SPPF            [256, 256, 5]
+ 12                -1  1     49536  yolort.v5.models.common.Conv            [256, 192, 1, 1]
  13                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
  14           [-1, 8]  1         0  yolort.v5.models.common.Concat          [1]
- 15                -1  1    813312  yolort.v5.models.common.C3              [768, 384, 1, False]
- 16                -1  1     98816  yolort.v5.models.common.Conv            [384, 256, 1, 1]
+ 15                -1  1    203904  yolort.v5.models.common.C3              [384, 192, 1, False]
+ 16                -1  1     24832  yolort.v5.models.common.Conv            [192, 128, 1, 1]
  17                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
  18           [-1, 6]  1         0  yolort.v5.models.common.Concat          [1]
- 19                -1  1    361984  yolort.v5.models.common.C3              [512, 256, 1, False]
- 20                -1  1     33024  yolort.v5.models.common.Conv            [256, 128, 1, 1]
+ 19                -1  1     90880  yolort.v5.models.common.C3              [256, 128, 1, False]
+ 20                -1  1      8320  yolort.v5.models.common.Conv            [128, 64, 1, 1]
  21                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
  22           [-1, 4]  1         0  yolort.v5.models.common.Concat          [1]
- 23                -1  1     90880  yolort.v5.models.common.C3              [256, 128, 1, False]
- 24                -1  1    147712  yolort.v5.models.common.Conv            [128, 128, 3, 2]
+ 23                -1  1     22912  yolort.v5.models.common.C3              [128, 64, 1, False]
+ 24                -1  1     36992  yolort.v5.models.common.Conv            [64, 64, 3, 2]
  25          [-1, 20]  1         0  yolort.v5.models.common.Concat          [1]
- 26                -1  1    296448  yolort.v5.models.common.C3              [256, 256, 1, False]
- 27                -1  1    590336  yolort.v5.models.common.Conv            [256, 256, 3, 2]
+ 26                -1  1     74496  yolort.v5.models.common.C3              [128, 128, 1, False]
+ 27                -1  1    147712  yolort.v5.models.common.Conv            [128, 128, 3, 2]
  28          [-1, 16]  1         0  yolort.v5.models.common.Concat          [1]
- 29                -1  1    715008  yolort.v5.models.common.C3              [512, 384, 1, False]
- 30                -1  1   1327872  yolort.v5.models.common.Conv            [384, 384, 3, 2]
+ 29                -1  1    179328  yolort.v5.models.common.C3              [256, 192, 1, False]
+ 30                -1  1    332160  yolort.v5.models.common.Conv            [192, 192, 3, 2]
  31          [-1, 12]  1         0  yolort.v5.models.common.Concat          [1]
- 32                -1  1   1313792  yolort.v5.models.common.C3              [768, 512, 1, False]
- 33  [23, 26, 29, 32]  1    327420  yolort.v5.models.yolo.Detect            [80, [[19, 27, 44, 40, 38, 94], [96, 68, 86, 152, 180, 137], [140, 301, 303, 264, 238, 542], [436, 615, 739, 380, 925, 792]], [128, 256, 384, 512]]
-Model Summary: 355 layers, 12626620 parameters, 12626620 gradients, 16.9 GFLOPs
+ 32                -1  1    329216  yolort.v5.models.common.C3              [384, 256, 1, False]
+ 33  [23, 26, 29, 32]  1    164220  yolort.v5.models.yolo.Detect            [80, [[19, 27, 44, 40, 38, 94], [96, 68, 86, 152, 180, 137], [140, 301, 303, 264, 238, 542], [436, 615, 739, 380, 925, 792]], [64, 128, 192, 256]]
+Model Summary: 355 layers, 3246940 parameters, 3246940 gradients, 4.6 GFLOPs
 
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -582,14 +607,13 @@ Model Summary: 355 layers, 12626620 parameters, 12626620 gradients, 16.9 GFLOPs
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Detection boxes with yolort:
-tensor([[ 59.24603, 110.29877, 562.79108, 372.38776],
-        [373.78802,  31.26453, 579.79883, 367.65234],
-        [217.00983, 228.40262, 254.52609, 370.50912],
-        [494.65121, 167.68111, 517.62640, 219.76228]])
+tensor([[ 72.04449, 113.26617, 526.27472, 368.60730],
+        [372.17160,  27.53978, 579.93250, 368.10205],
+        [208.25206, 229.42764, 252.49397, 369.39944]])
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -603,11 +627,11 @@ tensor([[ 59.24603, 110.29877, 562.79108, 372.38776],
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Detection scores with yolort:
-tensor([0.90184, 0.86808, 0.69460, 0.33327])
+tensor([0.82789, 0.77910, 0.31137])
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -621,14 +645,14 @@ tensor([0.90184, 0.86808, 0.69460, 0.33327])
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 Detection labels with yolort:
-tensor([ 0,  0, 27, 27])
+tensor([ 0,  0, 27])
 </pre></div></div>
 </div>
 </div>
 <div class="section" id="Varify-the-detection-results-between-yolort-and-ultralytics">
 <h2>Varify the detection results between yolort and ultralytics<a class="headerlink" href="#Varify-the-detection-results-between-yolort-and-ultralytics" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -658,7 +682,7 @@ Exported model has been tested, and the result looks good!
 <div class="section" id="Detection-output-visualisation">
 <h2>Detection output visualisation<a class="headerlink" href="#Detection-output-visualisation" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -686,7 +710,7 @@ Exported model has been tested, and the result looks good!
 </div>
 <p>Hah, that’s the trick to rescale the box correctly</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -696,7 +720,7 @@ Exported model has been tested, and the result looks good!
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
@@ -711,7 +735,7 @@ Exported model has been tested, and the result looks good!
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_how-to-align-with-ultralytics-yolov5_21_0.png" src="../_images/notebooks_how-to-align-with-ultralytics-yolov5_21_0.png" />
+<img alt="../_images/notebooks_how-to-align-with-ultralytics-yolov5_22_0.png" src="../_images/notebooks_how-to-align-with-ultralytics-yolov5_22_0.png" />
 </div>
 </div>
 </div>

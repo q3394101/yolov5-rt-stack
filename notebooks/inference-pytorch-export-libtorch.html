@@ -416,7 +416,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">yolort.models</span> <span class="kn">import</span> <span class="n">yolov5s</span>
+<span></span><span class="kn">from</span> <span class="nn">yolort.models</span> <span class="kn">import</span> <span class="n">yolov5n6</span>
 </pre></div>
 </div>
 </div>
@@ -425,7 +425,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">model</span> <span class="o">=</span> <span class="n">yolov5s</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">score_thresh</span><span class="o">=</span><span class="mf">0.55</span><span class="p">)</span>
+<span></span><span class="n">model</span> <span class="o">=</span> <span class="n">yolov5n6</span><span class="p">(</span><span class="n">pretrained</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">score_thresh</span><span class="o">=</span><span class="mf">0.55</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -439,7 +439,7 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
@@ -448,6 +448,15 @@ div.rendered_html tbody tr:hover {
 <span class="n">model_out</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/chi/anaconda3/envs/yolo/lib/python3.8/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  /opt/conda/conda-bld/pytorch_1634272106004/work/aten/src/ATen/native/TensorShape.cpp:2157.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+</pre></div></div>
 </div>
 </div>
 <div class="section" id="Varify-the-PyTorch-backend-inference-results">
@@ -467,17 +476,17 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-tensor([[669.2656, 391.3024, 809.8663, 885.2344],
-        [ 54.0635, 397.8317, 235.9531, 901.3731],
-        [222.8834, 406.8119, 341.5572, 854.7792],
-        [ 18.6321, 232.9766, 810.9739, 760.1171]])
+tensor([[ 53.57971, 384.40021, 229.50615, 901.34735],
+        [  9.73776, 223.84700, 798.18042, 755.73584],
+        [677.23083, 376.17642, 808.65375, 876.10358],
+        [228.31302, 402.98254, 343.62546, 855.54791]])
 </pre></div></div>
 </div>
-<p><em>Target outputs of boxes (yolov5s, with shape of 1080x810):</em></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([[669.2656, 391.3024, 809.8663, 885.2344],
-        [ 54.0635, 397.8317, 235.9531, 901.3731],
-        [222.8834, 406.8119, 341.5572, 854.7792],
-        [ 18.6321, 232.9766, 810.9739, 760.1171]])
+<p><em>Target outputs of boxes (yolov5n6, with shape of 1080x810):</em></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([[ 53.57971, 384.40021, 229.50615, 901.34735],
+        [  9.73776, 223.84700, 798.18042, 755.73584],
+        [677.23083, 376.17642, 808.65375, 876.10358],
+        [228.31302, 402.98254, 343.62546, 855.54791]])
 </pre></div>
 </div>
 <div class="nbinput docutils container">
@@ -495,11 +504,11 @@ tensor([[669.2656, 391.3024, 809.8663, 885.2344],
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-tensor([0.8901, 0.8733, 0.8537, 0.7234])
+tensor([0.90058, 0.86442, 0.84255, 0.77846])
 </pre></div></div>
 </div>
-<p><em>Target outputs of scores: (``yolov5s``, with shape of 1080x810)</em></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([0.8901, 0.8733, 0.8537, 0.7234])
+<p><em>Target outputs of scores: (``yolov5n6``, with shape of 1080x810)</em></p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([0.90058, 0.86442, 0.84255, 0.77846])
 </pre></div>
 </div>
 <div class="nbinput docutils container">
@@ -517,11 +526,11 @@ tensor([0.8901, 0.8733, 0.8537, 0.7234])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-tensor([0, 0, 0, 5])
+tensor([0, 5, 0, 0])
 </pre></div></div>
 </div>
 <p><em>Target outputs of labels:</em></p>
-<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([0, 0, 0, 5])
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>tensor([0, 5, 0, 0])
 </pre></div>
 </div>
 </div>
@@ -587,7 +596,7 @@ tensor([0, 0, 0, 5])
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># TorchScript export</span>
 <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting TorchScript export with torch </span><span class="si">{</span><span class="n">torch</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s1">...&#39;</span><span class="p">)</span>
-<span class="n">export_script_name</span> <span class="o">=</span> <span class="s1">&#39;yolov5s.torchscript.pt&#39;</span>  <span class="c1"># filename</span>
+<span class="n">export_script_name</span> <span class="o">=</span> <span class="s1">&#39;yolov5n6.torchscript.pt&#39;</span>  <span class="c1"># filename</span>
 </pre></div>
 </div>
 </div>
@@ -596,10 +605,10 @@ tensor([0, 0, 0, 5])
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-Starting TorchScript export with torch 1.7.1...
+Starting TorchScript export with torch 1.10.0...
 </pre></div></div>
 </div>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
@@ -609,6 +618,17 @@ Starting TorchScript export with torch 1.7.1...
 <span class="n">model_script</span> <span class="o">=</span> <span class="n">model_script</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/home/chi/anaconda3/envs/yolo/lib/python3.8/site-packages/torch/jit/_recursive.py:614: LightningDeprecationWarning: The `LightningModule.datamodule` property is deprecated in v1.3 and will be removed in v1.5. Access the datamodule through using `self.trainer.datamodule` instead.
+  item = getattr(mod, name, None)
+/home/chi/anaconda3/envs/yolo/lib/python3.8/site-packages/torch/jit/_recursive.py:614: LightningDeprecationWarning: The `LightningModule.loaded_optimizer_states_dict` property is deprecated in v1.4 and will be removed in v1.6.
+  item = getattr(mod, name, None)
+</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
@@ -639,10 +659,10 @@ Starting TorchScript export with torch 1.7.1...
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-/data/wangzq/yolov5-rt-stack/yolort/models/yolo.py:121: UserWarning: YOLO always returns a (Losses, Detections) tuple in scripting.
+/home/chi/project/yolov5-rt-stack/yolort/models/yolo.py:180: UserWarning: YOLO always returns a (Losses, Detections) tuple in scripting.
   warnings.warn(&#34;YOLO always returns a (Losses, Detections) tuple in scripting.&#34;)
-/data/wangzq/yolov5-rt-stack/yolort/models/yolo_module.py:111: UserWarning: YOLOModule always returns a (Losses, Detections) tuple in scripting.
-  warnings.warn(&#34;YOLOModule always returns a (Losses, Detections) tuple in scripting.&#34;)
+/home/chi/project/yolov5-rt-stack/yolort/models/yolo_module.py:127: UserWarning: YOLOv5 always returns a (Losses, Detections) tuple in scripting.
+  warnings.warn(&#34;YOLOv5 always returns a (Losses, Detections) tuple in scripting.&#34;)
 </pre></div></div>
 </div>
 </div>
@@ -676,7 +696,7 @@ Exported model has been tested with libtorch, and the result looks good!
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%%time</span>
+<span></span><span class="o">%%time</span>it
 <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
     <span class="n">out</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
@@ -687,8 +707,7 @@ Exported model has been tested with libtorch, and the result looks good!
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-CPU times: user 12 ms, sys: 4 ms, total: 16 ms
-Wall time: 16.6 ms
+128 ms ± 160 µs per loop (mean ± std. dev. of 7 runs, 10 loops each)
 </pre></div></div>
 </div>
 <p><strong>Time consumed on LibTorch backend</strong></p>
@@ -698,7 +717,6 @@ Wall time: 16.6 ms
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
 <span></span><span class="c1"># Dummy run once for torchscript</span>
-<span class="c1"># warnings.simplefilter(&quot;default&quot;)</span>
 <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
     <span class="n">out_script</span> <span class="o">=</span> <span class="n">model_script</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
@@ -709,7 +727,7 @@ Wall time: 16.6 ms
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="o">%%time</span>
+<span></span><span class="o">%%time</span>it
 <span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
     <span class="n">out_script</span> <span class="o">=</span> <span class="n">model_script</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 </pre></div>
@@ -720,8 +738,7 @@ Wall time: 16.6 ms
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-CPU times: user 8 ms, sys: 0 ns, total: 8 ms
-Wall time: 10.1 ms
+109 ms ± 402 µs per loop (mean ± std. dev. of 7 runs, 1 loop each)
 </pre></div></div>
 </div>
 </div>

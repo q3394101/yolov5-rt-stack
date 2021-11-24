@@ -99,11 +99,8 @@
 <span class="target" id="module-yolort.v5"></span><dl class="py class">
 <dt id="yolort.v5.AutoShape">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">yolort.v5.</span></code><code class="sig-name descname"><span class="pre">AutoShape</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.AutoShape" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
-<dt id="yolort.v5.AutoShape.autoshape">
-<code class="sig-name descname"><span class="pre">autoshape</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.AutoShape.autoshape" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
+<dd><p>YOLOv5 input-robust model wrapper for passing cv2/np/PIL/torch inputs.
+Includes preprocessing, inference and NMS</p>
 <dl class="py attribute">
 <dt id="yolort.v5.AutoShape.classes">
 <code class="sig-name descname"><span class="pre">classes</span></code><em class="property"> <span class="pre">=</span> <span class="pre">None</span></em><a class="headerlink" href="#yolort.v5.AutoShape.classes" title="Permalink to this definition">¶</a></dt>
@@ -113,6 +110,23 @@
 <dt id="yolort.v5.AutoShape.conf">
 <code class="sig-name descname"><span class="pre">conf</span></code><em class="property"> <span class="pre">=</span> <span class="pre">0.25</span></em><a class="headerlink" href="#yolort.v5.AutoShape.conf" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
+
+<dl class="py method">
+<dt id="yolort.v5.AutoShape.forward">
+<code class="sig-name descname"><span class="pre">forward</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">imgs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">640</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">augment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">profile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.AutoShape.forward" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="simple">
+<dt>Inference from various sources. For height=640, width=1280, RGB images example inputs are:</dt><dd><ul class="simple">
+<li><p>file: imgs = ‘data/images/zidane.jpg’  # str or PosixPath</p></li>
+<li><p>URI: = ‘<a class="reference external" href="https://ultralytics.com/images/zidane.jpg">https://ultralytics.com/images/zidane.jpg</a>’</p></li>
+<li><p>OpenCV: = cv2.imread(‘image.jpg’)[:,:,::-1]  # HWC BGR to RGB x(640,1280,3)</p></li>
+<li><p>PIL: = Image.open(‘image.jpg’) or ImageGrab.grab()  # HWC x(640,1280,3)</p></li>
+<li><p>numpy: = np.zeros((640,1280,3))  # HWC</p></li>
+<li><p>torch: = torch.zeros(16,3,320,640)  # BCHW (scaled to size=640, 0-1 values)</p></li>
+<li><p>multiple: = [Image.open(‘image1.jpg’), Image.open(‘image2.jpg’), …]  # list of images</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py attribute">
 <dt id="yolort.v5.AutoShape.iou">
@@ -308,11 +322,6 @@ are [“r3.1”, “r4.0”]. Default: “r4.0”.</p></li>
 <dt id="yolort.v5.Model">
 <em class="property"><span class="pre">class</span> </em><code class="sig-prename descclassname"><span class="pre">yolort.v5.</span></code><code class="sig-name descname"><span class="pre">Model</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yolov5s.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.Model" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="py method">
-<dt id="yolort.v5.Model.autoshape">
-<code class="sig-name descname"><span class="pre">autoshape</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.Model.autoshape" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="py method">
 <dt id="yolort.v5.Model.fuse">
 <code class="sig-name descname"><span class="pre">fuse</span></code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.Model.fuse" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -361,6 +370,13 @@ are [“r3.1”, “r4.0”]. Default: “r4.0”.</p></li>
 <dd></dd></dl>
 
 <dl class="py function">
+<dt id="yolort.v5.intersect_dicts">
+<code class="sig-prename descclassname"><span class="pre">yolort.v5.</span></code><code class="sig-name descname"><span class="pre">intersect_dicts</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dict1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dict2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.intersect_dicts" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dictionary intersection of matching keys and shapes,
+omitting ‘exclude’ keys, using dict1 values</p>
+</dd></dl>
+
+<dl class="py function">
 <dt id="yolort.v5.letterbox">
 <code class="sig-prename descclassname"><span class="pre">yolort.v5.</span></code><code class="sig-name descname"><span class="pre">letterbox</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">im</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">new_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(640,</span> <span class="pre">640)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(114,</span> <span class="pre">114,</span> <span class="pre">114)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">auto</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaleFill</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scaleup</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stride</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.letterbox" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
@@ -401,12 +417,12 @@ are [“r3.1”, “r4.0”]. Default: “r4.0”.</p></li>
 
 <dl class="py function">
 <dt id="yolort.v5.select_device">
-<code class="sig-prename descclassname"><span class="pre">yolort.v5.</span></code><code class="sig-name descname"><span class="pre">select_device</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.select_device" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">yolort.v5.</span></code><code class="sig-name descname"><span class="pre">select_device</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">device</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">batch_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">newline</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.select_device" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
 <dt id="yolort.v5.set_logging">
-<code class="sig-prename descclassname"><span class="pre">yolort.v5.</span></code><code class="sig-name descname"><span class="pre">set_logging</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rank</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.set_logging" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname"><span class="pre">yolort.v5.</span></code><code class="sig-name descname"><span class="pre">set_logging</span></code><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#yolort.v5.set_logging" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py function">
