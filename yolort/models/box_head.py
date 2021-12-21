@@ -116,6 +116,7 @@ class SetCriterion:
 
         self.num_anchors = num_anchors
         self.num_classes = num_classes
+        self.num_layers = len(anchor_grids)
         self.strides = strides
         self.anchor_grids = anchor_grids
 
@@ -146,6 +147,7 @@ class SetCriterion:
         self,
         targets: Tensor,
         head_outputs: List[Tensor],
+        dtype: torch.dtype = torch.float32,
     ) -> Dict[str, Tensor]:
         """
         This performs the loss computation.
@@ -157,13 +159,11 @@ class SetCriterion:
                 of the model for the format
         """
         device = targets.device
-        anchor_grids = torch.as_tensor(self.anchor_grids, dtype=torch.float32, device=device).view(
-            self.num_anchors, -1, 2
-        )
-        strides = torch.as_tensor(self.strides, dtype=torch.float32, device=device).view(-1, 1, 1)
-        anchor_grids /= strides
+        anchors = torch.tensor(self.anchor_grids, dtype=dtype, device=device)
+        strides = torch.tensor(self.strides, dtype=dtype, device=device)
+        anchors = anchors.view(self.num_layers, -1, 2) / strides.view(-1, 1, 1)
 
-        target_cls, target_box, indices, anchors = self.build_targets(targets, head_outputs, anchor_grids)
+        target_cls, target_box, indices, anchors = self.build_targets(targets, head_outputs, anchors)
 
         pos_weight_cls = torch.as_tensor([self.cls_pos], device=device)
         pos_weight_obj = torch.as_tensor([self.obj_pos], device=device)
