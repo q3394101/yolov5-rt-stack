@@ -4,114 +4,384 @@
 <html>
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>TensorRT Python Inference for yolort &#8212; yolort  documentation</title>
-    <link rel="stylesheet" href="../_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/insipid.css" type="text/css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <meta name="lang:clipboard.copy" content="Copy to clipboard">
+  <meta name="lang:clipboard.copied" content="Copied to clipboard">
+  <meta name="lang:search.language" content="en">
+  <meta name="lang:search.pipeline.stopwords" content="True">
+  <meta name="lang:search.pipeline.trimmer" content="True">
+  <meta name="lang:search.result.none" content="No matching documents">
+  <meta name="lang:search.result.one" content="1 matching document">
+  <meta name="lang:search.result.other" content="# matching documents">
+  <meta name="lang:search.tokenizer" content="[\s\-]+">
+
+  
+    <link href="https://fonts.gstatic.com/" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700|Roboto:300,400,400i,700&display=fallback" rel="stylesheet">
+
+    <style>
+      body,
+      input {
+        font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif
+      }
+
+      code,
+      kbd,
+      pre {
+        font-family: "Roboto Mono", "Courier New", Courier, monospace
+      }
+    </style>
+  
+
+  <link rel="stylesheet" href="../_static/stylesheets/application.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-palette.css"/>
+  <link rel="stylesheet" href="../_static/stylesheets/application-fixes.css"/>
+  
+  <link rel="stylesheet" href="../_static/fonts/material-icons.css"/>
+  
+  <meta name="theme-color" content="#3f51b5">
+  <script src="../_static/javascripts/modernizr.js"></script>
+  
+  
+  
+    <title>Deploying yolort on TensorRT &#8212; yolort  documentation</title>
+    <link rel="stylesheet" type="text/css" href="../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../_static/material.css" />
+    <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
     <script src="../_static/jquery.js"></script>
     <script src="../_static/underscore.js"></script>
     <script src="../_static/doctools.js"></script>
-    <script async="async" src="../_static/mathjax/tex-chtml.js"></script>
-    <script type="text/x-mathjax-config">MathJax.Hub.Config({"tex2jax": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true, "ignoreClass": "tex2jax_ignore|mathjax_ignore|document", "processClass": "tex2jax_process|mathjax_process|math|output_area"}})</script>
-    <script defer src="../_static/insipid.js"></script>
-    <script defer src="../_static/insipid-sidebar.js"></script>
+    <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script defer="defer" src="../_static/mathjax/tex-chtml.js"></script>
     <link rel="shortcut icon" href="../_static/favicon.svg"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Deploying yolort on TVM" href="export-relay-inference-tvm.html" />
-    <link rel="prev" title="Deploying yolort on ONNXRuntime" href="export-onnx-inference-onnxruntime.html" />
-    <meta name="mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="prev" title="Deploying yolort on ONNX Runtime" href="export-onnx-inference-onnxruntime.html" />
+  
+   
+
   </head>
-  <body class="sidebar-visible">
-    <script type="text/javascript">
-        (function() {
-            var $body = $(document.body);
-            $body.addClass('js');
-            $body.addClass('sidebar-resizing');  // avoid transitions on load
-            $body.removeClass('sidebar-visible');
-            try {
-                var sidebar = localStorage.getItem('sphinx-sidebar');
-                if (sidebar === 'visible') {
-                    $body.addClass('sidebar-visible');
-                }
-                var sidebar_width = localStorage.getItem('sphinx-sidebar-width');
-                if (sidebar_width) {
-                    $(':root').css('--sidebar-width', sidebar_width);
-                }
-            } catch(e) {
-            }
-        })();
-    </script>
-    <header id="topbar-placeholder">
-      <div id="topbar">
-        <div id="titlebar">
-          <div class="buttons">
-            <button id="sidebar-button" type="button" aria-controls="sphinxsidebar" accesskey="M">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M16 132h416c8.837 0 16-7.163 16-16V76c0-8.837-7.163-16-16-16H16C7.163 60 0 67.163 0 76v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16zm0 160h416c8.837 0 16-7.163 16-16v-40c0-8.837-7.163-16-16-16H16c-8.837 0-16 7.163-16 16v40c0 8.837 7.163 16 16 16z"/></svg>
-            </button>
-          </div>
-          <div class="title">
-            <a class="parent" href="../index.html" accesskey="U">yolort  documentation</a>
-            <a class="top" href="#">TensorRT Python Inference for yolort</a>
-          </div>
-          <div class="buttons">
-            <a href="https://github.com/zhiqwang/yolov5-rt-stack/" title="Github">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 496 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M165.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6zm-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3zm44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9zM244.8 8C106.1 8 0 113.3 0 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C428.2 457.8 496 362.9 496 252 496 113.3 383.5 8 244.8 8zM97.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1zm-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7zm32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1zm-11.4-14.7c-1.6 1-1.6 3.6 0 5.9 1.6 2.3 4.3 3.3 5.6 2.3 1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2z"/></svg>
-            </a>
-          </div>
-        </div>
-        <div id="searchbox" role="search">
-          <form id="search-form" class="search" style="display: none" action="../search.html" method="get">
-            <input type="search" name="q" placeholder="Search ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
-            <button>Go</button>
-          </form>
+  <body dir=ltr
+        data-md-color-primary=blue data-md-color-accent=light-blue>
+  
+  <svg class="md-svg">
+    <defs data-children-count="0">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+      
+    </defs>
+  </svg>
+  
+  <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer">
+  <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search">
+  <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+  <a href="#notebooks/onnx-graphsurgeon-inference-tensorrt" tabindex="1" class="md-skip"> Skip to content </a>
+  <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex navheader">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="../index.html" title="yolort  documentation"
+           class="md-header-nav__button md-logo">
+          
+              <img src="../_static/yolort_logo_icon.png" height="26"
+                   alt="yolort documentation logo">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          <span class="md-header-nav__topic">YOLOv5 Runtime Stack</span>
+          <span class="md-header-nav__topic"> Deploying yolort on TensorRT </span>
         </div>
       </div>
-    </header>
-    <nav>
-      <a href="export-onnx-inference-onnxruntime.html" class="nav-icon previous" title="previous:&#13;Deploying yolort on ONNXRuntime" aria-label="Previous topic" accesskey="P" tabindex="-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M31.7 239l136-136c9.4-9.4 24.6-9.4 33.9 0l22.6 22.6c9.4 9.4 9.4 24.6 0 33.9L127.9 256l96.4 96.4c9.4 9.4 9.4 24.6 0 33.9L201.7 409c-9.4 9.4-24.6 9.4-33.9 0l-136-136c-9.5-9.4-9.5-24.6-.1-34z"/></svg>
-      </a>
-      <a href="export-relay-inference-tvm.html" class="nav-icon next" title="next:&#13;Deploying yolort on TVM" aria-label="Next topic" accesskey="N" tabindex="-1">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M224.3 273l-136 136c-9.4 9.4-24.6 9.4-33.9 0l-22.6-22.6c-9.4-9.4-9.4-24.6 0-33.9l96.4-96.4-96.4-96.4c-9.4-9.4-9.4-24.6 0-33.9L54.3 103c9.4-9.4 24.6-9.4 33.9 0l136 136c9.5 9.4 9.5 24.6.1 34z"/></svg>
-      </a>
-    </nav>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            <a href="https://github.com/zhiqwang/yolov5-rt-stack/" title="Go to repository" class="md-source" data-md-source="github">
 
-    <nav class="relbar">
-      <a class="previous" href="export-onnx-inference-onnxruntime.html" aria-label="Previous topic" >
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"/></svg>
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    yolort
+  </div>
+</a>
+          </div>
         </div>
-        <div class="title">
-          <span class="text">
-            <span class="direction">previous</span>
-            Deploying yolort on ONNXRuntime
-          </span>
-        </div>
-      </a>
-      <a class="next" href="export-relay-inference-tvm.html" aria-label="Next topic" >
-        <div class="title">
-          <span class="text">
-            <span class="direction">next</span>
-            Deploying yolort on TVM
-          </span>
-        </div>
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"/></svg>
-        </div>
-      </a>
-    </nav>
+      
+      
+  
+  <script src="../_static/javascripts/version_dropdown.js"></script>
+  <script>
+    var json_loc = "../"versions.json"",
+        target_loc = "../../",
+        text = "Versions";
+    $( document ).ready( add_version_dropdown(json_loc, target_loc, text));
+  </script>
+  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+    </div>
+  </nav>
+</header>
+
+  
+  <div class="md-container">
+    
+    
+    
+  <nav class="md-tabs" data-md-component="tabs">
+    <div class="md-tabs__inner md-grid">
+      <ul class="md-tabs__list">
+          <li class="md-tabs__item"><a href="../index.html" class="md-tabs__link">yolort  documentation</a></li>
+      </ul>
+    </div>
+  </nav>
+    <main class="md-main">
+      <div class="md-main__inner md-grid" data-md-component="container">
+        
+          <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="../index.html" title="yolort documentation" class="md-nav__button md-logo">
+      
+        <img src="../_static/yolort_logo_icon.png" alt=" logo" width="48" height="48">
+      
+    </a>
+    <a href="../index.html"
+       title="yolort documentation">YOLOv5 Runtime Stack</a>
+  </label>
+    <div class="md-nav__source">
+      <a href="https://github.com/zhiqwang/yolov5-rt-stack/" title="Go to repository" class="md-source" data-md-source="github">
+
+    <div class="md-source__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 24 24" width="28" height="28">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    yolort
+  </div>
+</a>
+    </div>
+  
+  
+
+  
+  <ul class="md-nav__list">
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Getting Started</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../installation.html" class="md-nav__link">Install yolort</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Tutorials</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="inference-pytorch-export-libtorch.html" class="md-nav__link">Intuition for yolort</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="comparison-between-yolort-vs-yolov5.html" class="md-nav__link">What is the difference between yolort and yolov5</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="how-to-align-with-ultralytics-yolov5.html" class="md-nav__link">How to align with ultralytics yolov5</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="anchor-label-assignment-visualization.html" class="md-nav__link">Visualize the anchor-target assignment</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="model-graph-visualization.html" class="md-nav__link">Visualize model graph</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">Deployment</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="export-onnx-inference-onnxruntime.html" class="md-nav__link">Deploying yolort on ONNX Runtime</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    <label class="md-nav__link md-nav__link--active" for="__toc"> Deploying yolort on TensorRT </label>
+    
+      <a href="#" class="md-nav__link md-nav__link--active">Deploying yolort on TensorRT</a>
+      
+        
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#notebooks-onnx-graphsurgeon-inference-tensorrt--page-root" class="md-nav__link">Deploying yolort on TensorRT</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#TensorRT-Installation-Instructions" class="md-nav__link">TensorRT Installation Instructions</a>
+        </li>
+        <li class="md-nav__item"><a href="#Prepare-image-and-model-weights-to-test" class="md-nav__link">Prepare image and model weights to test</a>
+        </li>
+        <li class="md-nav__item"><a href="#Export-to-ONNX-and-TensorRT-model" class="md-nav__link">Export to ONNX and TensorRT model</a>
+        </li>
+        <li class="md-nav__item"><a href="#Test-the-exported-TensorRT-engine" class="md-nav__link">Test the exported TensorRT engine</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Inferencing-with-TensorRT" class="md-nav__link">Inferencing with TensorRT</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#Predict-as-yolort" class="md-nav__link">Predict as yolort</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Inferencing-with-PyTorch" class="md-nav__link">Inferencing with PyTorch</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#Verify-the-detection-results-between-yolort-and-TensorRT" class="md-nav__link">Verify the detection results between yolort and TensorRT</a>
+        </li>
+        <li class="md-nav__item"><a href="#Visualize-the-TensorRT-detections" class="md-nav__link">Visualize the TensorRT detections</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="export-relay-inference-tvm.html" class="md-nav__link">Deploying yolort on TVM</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+      <span class="md-nav__link caption"><span class="caption-text">API Reference</span></span>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../models.html" class="md-nav__link">yolort.models</a>
+      <ul class="md-nav__list"> 
+    <li class="md-nav__item">
+    
+    
+      <a href="../models.html#models-structure" class="md-nav__link">Models structure</a>
+      
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../models.html#pre-trained-weights" class="md-nav__link">Pre-trained weights</a>
+      
+    
+    </li></ul>
+    
+    </li>
+    <li class="md-nav__item">
+    
+    
+      <a href="../yolov5.html" class="md-nav__link">Modules and utils for YOLOv5</a>
+      
+    
+    </li>
+  </ul>
+  
+
+</nav>
+              </div>
+            </div>
+          </div>
+          <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+            <div class="md-sidebar__scrollwrap">
+              <div class="md-sidebar__inner">
+                
+<nav class="md-nav md-nav--secondary">
+    <label class="md-nav__title" for="__toc">Contents</label>
+  <ul class="md-nav__list" data-md-scrollfix="">
+        <li class="md-nav__item"><a href="#notebooks-onnx-graphsurgeon-inference-tensorrt--page-root" class="md-nav__link">Deploying yolort on TensorRT</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#TensorRT-Installation-Instructions" class="md-nav__link">TensorRT Installation Instructions</a>
+        </li>
+        <li class="md-nav__item"><a href="#Prepare-image-and-model-weights-to-test" class="md-nav__link">Prepare image and model weights to test</a>
+        </li>
+        <li class="md-nav__item"><a href="#Export-to-ONNX-and-TensorRT-model" class="md-nav__link">Export to ONNX and TensorRT model</a>
+        </li>
+        <li class="md-nav__item"><a href="#Test-the-exported-TensorRT-engine" class="md-nav__link">Test the exported TensorRT engine</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Inferencing-with-TensorRT" class="md-nav__link">Inferencing with TensorRT</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#Predict-as-yolort" class="md-nav__link">Predict as yolort</a><nav class="md-nav">
+              <ul class="md-nav__list">
+        <li class="md-nav__item"><a href="#Inferencing-with-PyTorch" class="md-nav__link">Inferencing with PyTorch</a>
+        </li></ul>
+            </nav>
+        </li>
+        <li class="md-nav__item"><a href="#Verify-the-detection-results-between-yolort-and-TensorRT" class="md-nav__link">Verify the detection results between yolort and TensorRT</a>
+        </li>
+        <li class="md-nav__item"><a href="#Visualize-the-TensorRT-detections" class="md-nav__link">Visualize the TensorRT detections</a>
+        </li></ul>
+            </nav>
+        </li>
+  </ul>
+</nav>
+              </div>
+            </div>
+          </div>
+        
+        <div class="md-content">
+          <article class="md-content__inner md-typeset" role="main">
             
-
+  
 <style>
 /* CSS for nbsphinx extension */
 
@@ -321,7 +591,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
-.prompt a.copybtn {
+.prompt .copybtn {
     display: none;
 }
 
@@ -364,23 +634,69 @@ div.rendered_html tbody tr:hover {
     .nboutput .prompt {
         display: none;
     }
-</style><div class="section" id="TensorRT-Python-Inference-for-yolort">
-<h1>TensorRT Python Inference for yolort<a class="headerlink" href="#TensorRT-Python-Inference-for-yolort" title="Permalink to this headline">¶</a></h1>
+</style><section id="Deploying-yolort-on-TensorRT">
+<h1 id="notebooks-onnx-graphsurgeon-inference-tensorrt--page-root">Deploying yolort on TensorRT<a class="headerlink" href="#notebooks-onnx-graphsurgeon-inference-tensorrt--page-root" title="Permalink to this headline">¶</a></h1>
+<p>Unlike other pipelines that deal with yolov5 on TensorRT, we embed the whole post-processing into the Graph with <code class="docutils literal notranslate"><span class="pre">onnx-graghsurgeon</span></code>. We gain a lot with this whole pipeline. The ablation experiment results are below. The first one is the result without running <code class="docutils literal notranslate"><span class="pre">EfficientNMS_TRT</span></code>, and the second one is the result with <code class="docutils literal notranslate"><span class="pre">EfficientNMS_TRT</span></code> embedded. As you can see, the inference time is even reduced, we guess it is because the data copied to the device will be much less after doing
+<code class="docutils literal notranslate"><span class="pre">EfficientNMS_TRT</span></code>. (The mean Latency of D2H is reduced from <code class="docutils literal notranslate"><span class="pre">0.868048</span> <span class="pre">ms</span></code> to <code class="docutils literal notranslate"><span class="pre">0.0102295</span> <span class="pre">ms</span></code>, running on Nivdia Geforce GTX 1080ti, using TensorRT 8.2 with yolov5n6 and scaling images to <code class="docutils literal notranslate"><span class="pre">512x640</span></code>.)</p>
+<p>And <code class="docutils literal notranslate"><span class="pre">onnx-graphsurgeon</span></code> is easy to install, you can just use their prebuilt wheels:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>python3 -m pip install onnx_graphsurgeon --index-url https://pypi.ngc.nvidia.com
+</pre></div>
+</div>
+<p>The detailed results:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[I] === Performance summary w/o EfficientNMS_TRT plugin ===
+[I] Throughput: 383.298 qps
+[I] Latency: min = 3.66479 ms, max = 5.41199 ms, mean = 4.00543 ms, median = 3.99316 ms, percentile(99%) = 4.23831 ms
+[I] End-to-End Host Latency: min = 3.76599 ms, max = 6.45874 ms, mean = 5.08597 ms, median = 5.07544 ms, percentile(99%) = 5.50839 ms
+[I] Enqueue Time: min = 0.743408 ms, max = 5.27966 ms, mean = 0.940805 ms, median = 0.924805 ms, percentile(99%) = 1.37329 ms
+[I] H2D Latency: min = 0.502045 ms, max = 0.62674 ms, mean = 0.538255 ms, median = 0.537354 ms, percentile(99%) = 0.582153 ms
+[I] GPU Compute Time: min = 2.23233 ms, max = 3.92395 ms, mean = 2.59913 ms, median = 2.58661 ms, percentile(99%) = 2.8201 ms
+[I] D2H Latency: min = 0.851807 ms, max = 0.900421 ms, mean = 0.868048 ms, median = 0.867676 ms, percentile(99%) = 0.889191 ms
+[I] Total Host Walltime: 3.0081 s
+[I] Total GPU Compute Time: 2.99679 s
+[I] Explanations of the performance metrics are printed in the verbose logs.
+[I]
+&amp;&amp;&amp;&amp; PASSED TensorRT.trtexec [TensorRT v8201] # trtexec --onnx=yolov5n6-no-nms.onnx --workspace=8096
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[I] === Performance summary w/ EfficientNMS_TRT plugin ===
+[I] Throughput: 389.234 qps
+[I] Latency: min = 2.81482 ms, max = 9.77234 ms, mean = 3.1062 ms, median = 3.07642 ms, percentile(99%) = 3.33548 ms
+[I] End-to-End Host Latency: min = 2.82202 ms, max = 11.6749 ms, mean = 4.939 ms, median = 4.95587 ms, percentile(99%) = 5.45207 ms
+[I] Enqueue Time: min = 0.999878 ms, max = 11.3833 ms, mean = 1.28942 ms, median = 1.18579 ms, percentile(99%) = 4.53088 ms
+[I] H2D Latency: min = 0.488159 ms, max = 0.633881 ms, mean = 0.546754 ms, median = 0.546631 ms, percentile(99%) = 0.570557 ms
+[I] GPU Compute Time: min = 2.30298 ms, max = 9.21094 ms, mean = 2.54921 ms, median = 2.51904 ms, percentile(99%) = 2.78528 ms
+[I] D2H Latency: min = 0.00610352 ms, max = 0.302734 ms, mean = 0.0102295 ms, median = 0.00976562 ms, percentile(99%) = 0.0151367 ms
+[I] Total Host Walltime: 3.00591 s
+[I] Total GPU Compute Time: 2.98258 s
+[I] Explanations of the performance metrics are printed in the verbose logs.
+[I]
+&amp;&amp;&amp;&amp; PASSED TensorRT.trtexec [TensorRT v8201] # trtexec --onnx=yolov5n6-efficient-nms.onnx --workspace=8096
+</pre></div>
+</div>
+<section id="TensorRT-Installation-Instructions">
+<h2 id="TensorRT-Installation-Instructions">TensorRT Installation Instructions<a class="headerlink" href="#TensorRT-Installation-Instructions" title="Permalink to this headline">¶</a></h2>
+<p>For us to unfold the subsequent story, TensorRT should be installed and the minimal version of TensorRT to run this demo is 8.2.0. Check out the TensorRT installation guides at <a class="reference external" href="https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html">https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html</a>. You can use the Python wheels provided by TensorRT if you only want to use the Python interface:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>pip install -U nvidia-tensorrt --index-url https://pypi.ngc.nvidia.com
+</pre></div>
+</div>
+<p>These wheels only works on Ubuntu 18.04+ or CentOS 7+ with Python versions 3.6 to 3.9 and CUDA 11.x. Check out the details at <a class="reference external" href="https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html#installing-pip">https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html#installing-pip</a>.</p>
+<p>There are many ways to install the whole TensorRT at <a class="reference external" href="https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html#installing">https://docs.nvidia.com/deeplearning/tensorrt/install-guide/index.html#installing</a>. One option to use the C++ interface of TensorRT is via docker. We’ve tested the docker published by Meta (Facebook) containing the TensorRT and PyTorch at NVIDIA GPU Cloud (NGC): <a class="reference external" href="https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch">https://catalog.ngc.nvidia.com/orgs/nvidia/containers/pytorch</a>.</p>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">os</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">torch</span>
 
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CUDA_DEVICE_ORDER&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;PCI_BUS_ID&quot;</span>
-<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;CUDA_VISIBLE_DEVICES&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;0&quot;</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"CUDA_DEVICE_ORDER"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"PCI_BUS_ID"</span>
+<span class="n">cuda_visible</span> <span class="o">=</span> <span class="s2">"0"</span>
+<span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">"CUDA_VISIBLE_DEVICES"</span><span class="p">]</span> <span class="o">=</span> <span class="n">cuda_visible</span>
 
 <span class="k">assert</span> <span class="n">torch</span><span class="o">.</span><span class="n">cuda</span><span class="o">.</span><span class="n">is_available</span><span class="p">()</span>
-<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">&#39;cuda&#39;</span><span class="p">)</span>
+<span class="n">device</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">device</span><span class="p">(</span><span class="s1">'cuda'</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We&#39;re using: </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s1">&#39;CUDA_VISIBLE_DEVICES&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">.&quot;</span><span class="p">)</span>
+<span class="kn">import</span> <span class="nn">tensorrt</span> <span class="k">as</span> <span class="nn">trt</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">"We're using TensorRT: </span><span class="si">{</span><span class="n">trt</span><span class="o">.</span><span class="n">__version__</span><span class="si">}</span><span class="s2"> on </span><span class="si">{</span><span class="n">device</span><span class="si">}</span><span class="s2"> device: </span><span class="si">{</span><span class="n">cuda_visible</span><span class="si">}</span><span class="s2">."</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -389,465 +705,363 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-We&#39;re using: cuda:0.
+We're using TensorRT: 8.2.4.2 on cuda device: 0.
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">import</span> <span class="nn">cv2</span>
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">cv2</span>
 
-<span class="kn">from</span> <span class="nn">yolort.utils</span> <span class="kn">import</span> <span class="n">cv2_imshow</span>
-<span class="kn">from</span> <span class="nn">yolort.utils.image_utils</span> <span class="kn">import</span> <span class="n">plot_one_box</span><span class="p">,</span> <span class="n">color_list</span>
-<span class="kn">from</span> <span class="nn">yolort.v5</span> <span class="kn">import</span> <span class="n">letterbox</span><span class="p">,</span> <span class="n">non_max_suppression</span><span class="p">,</span> <span class="n">scale_coords</span><span class="p">,</span> <span class="n">attempt_download</span>
-<span class="kn">from</span> <span class="nn">yolort.v5.utils.datasets</span> <span class="kn">import</span> <span class="n">IMG_FORMATS</span><span class="p">,</span> <span class="n">VID_FORMATS</span><span class="p">,</span> <span class="n">LoadImages</span>
-<span class="kn">from</span> <span class="nn">yolort.v5.utils.torch_utils</span> <span class="kn">import</span> <span class="n">select_device</span><span class="p">,</span> <span class="n">time_sync</span>
+<span class="kn">from</span> <span class="nn">yolort.utils</span> <span class="kn">import</span> <span class="n">Visualizer</span>
+<span class="kn">from</span> <span class="nn">yolort.v5</span> <span class="kn">import</span> <span class="n">attempt_download</span>
+<span class="kn">from</span> <span class="nn">yolort.v5.utils.downloads</span> <span class="kn">import</span> <span class="n">safe_download</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="Prepare-image-and-model-weights-to-test">
-<h2>Prepare image and model weights to test<a class="headerlink" href="#Prepare-image-and-model-weights-to-test" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="Prepare-image-and-model-weights-to-test">
+<h2 id="Prepare-image-and-model-weights-to-test">Prepare image and model weights to test<a class="headerlink" href="#Prepare-image-and-model-weights-to-test" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Define some parameters</span>
-<span class="n">img_size</span> <span class="o">=</span> <span class="p">[</span><span class="mi">320</span><span class="p">,</span> <span class="mi">320</span><span class="p">]</span>
-<span class="n">stride</span> <span class="o">=</span> <span class="mi">32</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Define some parameters</span>
+<span class="n">batch_size</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">img_size</span> <span class="o">=</span> <span class="mi">640</span>
+<span class="n">size_divisible</span> <span class="o">=</span> <span class="mi">32</span>
+<span class="n">fixed_shape</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="n">score_thresh</span> <span class="o">=</span> <span class="mf">0.35</span>
-<span class="n">iou_thresh</span> <span class="o">=</span> <span class="mf">0.45</span>
+<span class="n">nms_thresh</span> <span class="o">=</span> <span class="mf">0.45</span>
 <span class="n">detections_per_img</span> <span class="o">=</span> <span class="mi">100</span>
-<span class="n">half</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="c1"># Must upgrade TensorRT to 8.2.4 or higher to use fp16 mode.</span>
+<span class="n">precision</span> <span class="o">=</span> <span class="s2">"fp16"</span>
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># img_path = &quot;https://raw.githubusercontent.com/zhiqwang/yolov5-rt-stack/main/test/assets/zidane.jpg&quot;</span>
-<span class="n">img_source</span> <span class="o">=</span> <span class="s2">&quot;https://gitee.com/zhiqwang/yolov5-rt-stack/raw/main/test/assets/zidane.jpg&quot;</span>
-<span class="n">dataset</span> <span class="o">=</span> <span class="n">LoadImages</span><span class="p">(</span><span class="n">img_source</span><span class="p">,</span> <span class="n">img_size</span><span class="o">=</span><span class="n">img_size</span><span class="p">,</span> <span class="n">stride</span><span class="o">=</span><span class="n">stride</span><span class="p">,</span> <span class="n">auto</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
-
-<span class="c1"># yolov5s6.pt is downloaded from &#39;https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5n6.pt&#39;</span>
-<span class="n">model_path</span> <span class="o">=</span> <span class="s2">&quot;https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5n6.pt&quot;</span>
-<span class="n">checkpoint_path</span> <span class="o">=</span> <span class="n">attempt_download</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
-<span class="n">onnx_path</span> <span class="o">=</span> <span class="s2">&quot;yolov5n6.onnx&quot;</span>
-<span class="n">engine_path</span> <span class="o">=</span> <span class="s2">&quot;yolov5n6.engine&quot;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># img_source = "https://huggingface.co/spaces/zhiqwang/assets/resolve/main/zidane.jpg"</span>
+<span class="n">img_source</span> <span class="o">=</span> <span class="s2">"https://huggingface.co/spaces/zhiqwang/assets/resolve/main/bus.jpg"</span>
+<span class="n">img_path</span> <span class="o">=</span> <span class="n">img_source</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">safe_download</span><span class="p">(</span><span class="n">img_path</span><span class="p">,</span> <span class="n">img_source</span><span class="p">)</span>
+<span class="n">img_raw</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Downloading https://huggingface.co/spaces/zhiqwang/assets/resolve/main/bus.jpg to bus.jpg...
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "df5c318386da47e39f8fc9cc04862fe5", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">path</span><span class="p">,</span> <span class="n">image</span><span class="p">,</span> <span class="n">img_raw</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">s</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">dataset</span><span class="p">))</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># yolov5s6.pt is downloaded from 'https://github.com/ultralytics/yolov5/releases/download/v6.0/yolov5n6.pt'</span>
+<span class="n">model_path</span> <span class="o">=</span> <span class="s2">"yolov5s.pt"</span>
+
+<span class="n">checkpoint_path</span> <span class="o">=</span> <span class="n">attempt_download</span><span class="p">(</span><span class="n">model_path</span><span class="p">)</span>
+<span class="n">onnx_path</span> <span class="o">=</span> <span class="s2">"yolov5s.onnx"</span>
+<span class="n">engine_path</span> <span class="o">=</span> <span class="s2">"yolov5s.engine"</span>
 </pre></div>
 </div>
 </div>
-</div>
-<div class="section" id="Export-to-ONNX-and-TensorRT-model">
-<h2>Export to ONNX and TensorRT model<a class="headerlink" href="#Export-to-ONNX-and-TensorRT-model" title="Permalink to this headline">¶</a></h2>
-<p>Define the YOLOTRTModule for TensorRT inferencing.</p>
+</section>
+<section id="Export-to-ONNX-and-TensorRT-model">
+<h2 id="Export-to-ONNX-and-TensorRT-model">Export to ONNX and TensorRT model<a class="headerlink" href="#Export-to-ONNX-and-TensorRT-model" title="Permalink to this headline">¶</a></h2>
+<p>We provide a utilization tool <code class="docutils literal notranslate"><span class="pre">export_tensorrt_engine</span></code> for exporting TensorRT engines.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">yolort.runtime.yolo_graphsurgeon</span> <span class="kn">import</span> <span class="n">YOLOGraphSurgeon</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">yolort.runtime.trt_helper</span> <span class="kn">import</span> <span class="n">export_tensorrt_engine</span>
 </pre></div>
 </div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">yolo_gs</span> <span class="o">=</span> <span class="n">YOLOGraphSurgeon</span><span class="p">(</span>
-    <span class="n">model_path</span><span class="p">,</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;r6.0&quot;</span><span class="p">,</span>
-    <span class="n">enable_dynamic</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">input_sample</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="n">batch_size</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-
-                 from  n    params  module                                  arguments
-  0                -1  1      1760  yolort.v5.models.common.Conv            [3, 16, 6, 2, 2]
-  1                -1  1      4672  yolort.v5.models.common.Conv            [16, 32, 3, 2]
-  2                -1  1      4800  yolort.v5.models.common.C3              [32, 32, 1]
-  3                -1  1     18560  yolort.v5.models.common.Conv            [32, 64, 3, 2]
-  4                -1  2     29184  yolort.v5.models.common.C3              [64, 64, 2]
-  5                -1  1     73984  yolort.v5.models.common.Conv            [64, 128, 3, 2]
-  6                -1  3    156928  yolort.v5.models.common.C3              [128, 128, 3]
-  7                -1  1    221568  yolort.v5.models.common.Conv            [128, 192, 3, 2]
-  8                -1  1    167040  yolort.v5.models.common.C3              [192, 192, 1]
-  9                -1  1    442880  yolort.v5.models.common.Conv            [192, 256, 3, 2]
- 10                -1  1    296448  yolort.v5.models.common.C3              [256, 256, 1]
- 11                -1  1    164608  yolort.v5.models.common.SPPF            [256, 256, 5]
- 12                -1  1     49536  yolort.v5.models.common.Conv            [256, 192, 1, 1]
- 13                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
- 14           [-1, 8]  1         0  yolort.v5.models.common.Concat          [1]
- 15                -1  1    203904  yolort.v5.models.common.C3              [384, 192, 1, False]
- 16                -1  1     24832  yolort.v5.models.common.Conv            [192, 128, 1, 1]
- 17                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
- 18           [-1, 6]  1         0  yolort.v5.models.common.Concat          [1]
- 19                -1  1     90880  yolort.v5.models.common.C3              [256, 128, 1, False]
- 20                -1  1      8320  yolort.v5.models.common.Conv            [128, 64, 1, 1]
- 21                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
- 22           [-1, 4]  1         0  yolort.v5.models.common.Concat          [1]
- 23                -1  1     22912  yolort.v5.models.common.C3              [128, 64, 1, False]
- 24                -1  1     36992  yolort.v5.models.common.Conv            [64, 64, 3, 2]
- 25          [-1, 20]  1         0  yolort.v5.models.common.Concat          [1]
- 26                -1  1     74496  yolort.v5.models.common.C3              [128, 128, 1, False]
- 27                -1  1    147712  yolort.v5.models.common.Conv            [128, 128, 3, 2]
- 28          [-1, 16]  1         0  yolort.v5.models.common.Concat          [1]
- 29                -1  1    179328  yolort.v5.models.common.C3              [256, 192, 1, False]
- 30                -1  1    332160  yolort.v5.models.common.Conv            [192, 192, 3, 2]
- 31          [-1, 12]  1         0  yolort.v5.models.common.Concat          [1]
- 32                -1  1    329216  yolort.v5.models.common.C3              [384, 256, 1, False]
- 33  [23, 26, 29, 32]  1    164220  yolort.v5.models.yolo.Detect            [80, [[19, 27, 44, 40, 38, 94], [96, 68, 86, 152, 180, 137], [140, 301, 303, 264, 238, 542], [436, 615, 739, 380, 925, 792]], [64, 128, 192, 256]]
-/opt/conda/lib/python3.8/site-packages/torch/functional.py:445: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  ../aten/src/ATen/native/TensorShape.cpp:2157.)
-  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
-Model Summary: 355 layers, 3246940 parameters, 3246940 gradients, 4.6 GFLOPs
-
-Loaded saved model from /coding/yolov5-rt-stack/checkpoints/yolov5-ckpt/yolov5n6-beecbbae.pt
-/coding/yolov5-rt-stack/yolort/models/anchor_utils.py:45: TracerWarning: torch.tensor results are registered as constants in the trace. You can safely ignore this warning if you use this function to create tensors out of constant variables that would be the same every time you call this function. In any other case, this might cause the trace to be incorrect.
-  anchors = torch.tensor(self.anchor_grids, dtype=dtype, device=device)
-/coding/yolov5-rt-stack/yolort/models/anchor_utils.py:46: TracerWarning: torch.tensor results are registered as constants in the trace. You can safely ignore this warning if you use this function to create tensors out of constant variables that would be the same every time you call this function. In any other case, this might cause the trace to be incorrect.
-  strides = torch.tensor(self.strides, dtype=dtype, device=device)
-/coding/yolov5-rt-stack/yolort/models/anchor_utils.py:46: UserWarning: To copy construct from a tensor, it is recommended to use sourceTensor.clone().detach() or sourceTensor.clone().detach().requires_grad_(True), rather than torch.tensor(sourceTensor).
-  strides = torch.tensor(self.strides, dtype=dtype, device=device)
-/coding/yolov5-rt-stack/yolort/models/box_head.py:391: TracerWarning: Using len to get tensor shape might cause the trace to be incorrect. Recommended usage would be tensor.shape[0]. Passing a tensor of different shape might lead to errors or silently give incorrect results.
-  batch_size = len(head_outputs[0])
-PyTorch2ONNX graph created successfully
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-[W] &#39;Shape tensor cast elision&#39; routine failed with: None
-</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">yolo_gs</span><span class="o">.</span><span class="n">register_nms</span><span class="p">(</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">export_tensorrt_engine</span><span class="p">(</span>
+    <span class="n">model_path</span><span class="p">,</span>
     <span class="n">score_thresh</span><span class="o">=</span><span class="n">score_thresh</span><span class="p">,</span>
-    <span class="n">nms_thresh</span><span class="o">=</span><span class="n">iou_thresh</span><span class="p">,</span>
+    <span class="n">nms_thresh</span><span class="o">=</span><span class="n">nms_thresh</span><span class="p">,</span>
+    <span class="n">onnx_path</span><span class="o">=</span><span class="n">onnx_path</span><span class="p">,</span>
+    <span class="n">engine_path</span><span class="o">=</span><span class="n">engine_path</span><span class="p">,</span>
+    <span class="n">input_sample</span><span class="o">=</span><span class="n">input_sample</span><span class="p">,</span>
     <span class="n">detections_per_img</span><span class="o">=</span><span class="n">detections_per_img</span><span class="p">,</span>
+    <span class="n">precision</span><span class="o">=</span><span class="n">precision</span>
 <span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Created NMS plugin &#39;BatchedNMS_TRT&#39; with attributes: {&#39;plugin_version&#39;: &#39;1&#39;, &#39;shareLocation&#39;: True, &#39;backgroundLabelId&#39;: -1, &#39;numClasses&#39;: 80, &#39;topK&#39;: 1024, &#39;keepTopK&#39;: 100, &#39;scoreThreshold&#39;: 0.35, &#39;iouThreshold&#39;: 0.45, &#39;isNormalized&#39;: True, &#39;clipBoxes&#39;: False}
-Warning: Unsupported operator BatchedNMS_TRT. No schema registered for this operator.
+Loaded saved model from yolov5s.pt
+/root/miniconda3/envs/torch/lib/python3.8/site-packages/torch/functional.py:568: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  ../aten/src/ATen/native/TensorShape.cpp:2228.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
+/workspace/yolo/yolov5-rt-stack/yolort/models/anchor_utils.py:46: TracerWarning: torch.as_tensor results are registered as constants in the trace. You can safely ignore this warning if you use this function to create tensors out of constant variables that would be the same every time you call this function. In any other case, this might cause the trace to be incorrect.
+  anchors = torch.as_tensor(self.anchor_grids, dtype=torch.float32, device=device).to(dtype=dtype)
+/workspace/yolo/yolov5-rt-stack/yolort/models/anchor_utils.py:47: TracerWarning: torch.as_tensor results are registered as constants in the trace. You can safely ignore this warning if you use this function to create tensors out of constant variables that would be the same every time you call this function. In any other case, this might cause the trace to be incorrect.
+  strides = torch.as_tensor(self.strides, dtype=torch.float32, device=device).to(dtype=dtype)
+/workspace/yolo/yolov5-rt-stack/yolort/relay/logits_decoder.py:45: TracerWarning: torch.as_tensor results are registered as constants in the trace. You can safely ignore this warning if you use this function to create tensors out of constant variables that would be the same every time you call this function. In any other case, this might cause the trace to be incorrect.
+  strides = torch.as_tensor(self.strides, dtype=torch.float32, device=device).to(dtype=dtype)
+/workspace/yolo/yolov5-rt-stack/yolort/models/box_head.py:337: TracerWarning: Iterating over a tensor might cause the trace to be incorrect. Passing a tensor of different shape won't change the number of iterations executed (and might lead to errors or silently give incorrect results).
+  for head_output, grid, shift, stride in zip(head_outputs, grids, shifts, strides):
+PyTorch2ONNX graph created successfully
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
-</pre></div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">yolo_gs</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">onnx_path</span><span class="p">)</span>
-</pre></div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[W] 'Shape tensor cast elision' routine failed with: None
+</pre></div></div>
 </div>
-</div>
-<div class="nboutput nblast docutils container">
+<div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-Saved ONNX model to yolov5n6.onnx
+Created NMS plugin 'EfficientNMS_TRT' with attributes: {'plugin_version': '1', 'background_class': -1, 'max_output_boxes': 100, 'score_threshold': 0.35, 'iou_threshold': 0.45, 'score_activation': False, 'box_coding': 0}
+Saved ONNX model to yolov5s.onnx
+Network Description
+Input 'images' with shape (1, 3, 640, 640) and dtype DataType.FLOAT
+Output 'num_detections' with shape (1, 1) and dtype DataType.INT32
+Output 'detection_boxes' with shape (1, 100, 4) and dtype DataType.FLOAT
+Output 'detection_scores' with shape (1, 100) and dtype DataType.FLOAT
+Output 'detection_classes' with shape (1, 100) and dtype DataType.INT32
+Building fp16 Engine in yolov5s.engine
 </pre></div></div>
 </div>
-<div class="section" id="Build-and-export-the-TensorRT-engine.">
-<h3>Build and export the TensorRT engine.<a class="headerlink" href="#Build-and-export-the-TensorRT-engine." title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
-</pre></div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">yolort.runtime.trt_helper</span> <span class="kn">import</span> <span class="n">EngineBuilder</span>
-</pre></div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[05/22/2022-11:13:24] [TRT] [I] [MemUsageChange] Init CUDA: CPU +457, GPU +0, now: CPU 674, GPU 354 (MiB)
+[05/22/2022-11:13:24] [TRT] [I] [MemUsageSnapshot] Begin constructing builder kernel library: CPU 674 MiB, GPU 354 MiB
+[05/22/2022-11:13:24] [TRT] [I] [MemUsageSnapshot] End constructing builder kernel library: CPU 828 MiB, GPU 398 MiB
+[05/22/2022-11:13:24] [TRT] [I] ----------------------------------------------------------------
+[05/22/2022-11:13:24] [TRT] [I] Input filename:   yolov5s.onnx
+[05/22/2022-11:13:24] [TRT] [I] ONNX IR version:  0.0.8
+[05/22/2022-11:13:24] [TRT] [I] Opset version:    11
+[05/22/2022-11:13:24] [TRT] [I] Producer name:
+[05/22/2022-11:13:24] [TRT] [I] Producer version:
+[05/22/2022-11:13:24] [TRT] [I] Domain:
+[05/22/2022-11:13:24] [TRT] [I] Model version:    0
+[05/22/2022-11:13:24] [TRT] [I] Doc string:
+[05/22/2022-11:13:24] [TRT] [I] ----------------------------------------------------------------
+[05/22/2022-11:13:24] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:364: Your ONNX model has been generated with INT64 weights, while TensorRT does not natively support INT64. Attempting to cast down to INT32.
+[05/22/2022-11:13:24] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:392: One or more weights outside the range of INT32 was clamped
+[05/22/2022-11:13:24] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:392: One or more weights outside the range of INT32 was clamped
+[05/22/2022-11:13:24] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:392: One or more weights outside the range of INT32 was clamped
+[05/22/2022-11:13:24] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:392: One or more weights outside the range of INT32 was clamped
+[05/22/2022-11:13:24] [TRT] [I] No importer registered for op: EfficientNMS_TRT. Attempting to import as plugin.
+[05/22/2022-11:13:24] [TRT] [I] Searching for plugin: EfficientNMS_TRT, plugin_version: 1, plugin_namespace:
+[05/22/2022-11:13:24] [TRT] [I] Successfully created plugin: EfficientNMS_TRT
+[05/22/2022-11:13:25] [TRT] [I] [MemUsageChange] Init cuBLAS/cuBLASLt: CPU +850, GPU +368, now: CPU 1711, GPU 766 (MiB)
+[05/22/2022-11:13:25] [TRT] [I] [MemUsageChange] Init cuDNN: CPU +125, GPU +58, now: CPU 1836, GPU 824 (MiB)
+[05/22/2022-11:13:25] [TRT] [I] Local timing cache in use. Profiling results in this builder pass will not be stored.
+</pre></div></div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
 </div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">engine_builder</span> <span class="o">=</span> <span class="n">EngineBuilder</span><span class="p">()</span>
-</pre></div>
-</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Serialize engine success, saved as yolov5s.engine
+</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[12/25/2021-03:19:38] [TRT] [I] [MemUsageChange] Init CUDA: CPU +177, GPU +0, now: CPU 370, GPU 4652 (MiB)
+[05/22/2022-11:17:18] [TRT] [I] Detected 1 inputs and 4 output network tensors.
+[05/22/2022-11:17:18] [TRT] [I] Total Host Persistent Memory: 136048
+[05/22/2022-11:17:18] [TRT] [I] Total Device Persistent Memory: 15027712
+[05/22/2022-11:17:18] [TRT] [I] Total Scratch Memory: 40320768
+[05/22/2022-11:17:18] [TRT] [I] [MemUsageStats] Peak memory usage of TRT CPU/GPU memory allocators: CPU 17 MiB, GPU 4371 MiB
+[05/22/2022-11:17:18] [TRT] [I] [BlockAssignment] Algorithm ShiftNTopDown took 4.87204ms to assign 7 blocks to 82 nodes requiring 52404225 bytes.
+[05/22/2022-11:17:18] [TRT] [I] Total Activation Memory: 52404225
+[05/22/2022-11:17:18] [TRT] [I] [MemUsageChange] Init cuBLAS/cuBLASLt: CPU +0, GPU +8, now: CPU 4880, GPU 2272 (MiB)
+[05/22/2022-11:17:18] [TRT] [I] [MemUsageChange] Init cuDNN: CPU +0, GPU +8, now: CPU 4880, GPU 2280 (MiB)
+[05/22/2022-11:17:18] [TRT] [I] [MemUsageChange] TensorRT-managed allocation in building engine: CPU +14, GPU +15, now: CPU 14, GPU 15 (MiB)
 </pre></div></div>
 </div>
+</section>
+<section id="Test-the-exported-TensorRT-engine">
+<h2 id="Test-the-exported-TensorRT-engine">Test the exported TensorRT engine<a class="headerlink" href="#Test-the-exported-TensorRT-engine" title="Permalink to this headline">¶</a></h2>
+<p>Actually the above exported TensorRT engine only contains the post-processing (<code class="docutils literal notranslate"><span class="pre">nms</span></code>). And we wrap the pre-processing named <code class="docutils literal notranslate"><span class="pre">YOLOTransform</span></code> into a new module <code class="docutils literal notranslate"><span class="pre">PredictorTRT</span></code> for easy of use.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">yolort.runtime</span> <span class="kn">import</span> <span class="n">PredictorTRT</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_runtime</span> <span class="o">=</span> <span class="n">PredictorTRT</span><span class="p">(</span><span class="n">engine_path</span><span class="p">,</span> <span class="n">device</span><span class="o">=</span><span class="n">device</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Loading yolov5s.engine for TensorRT inference...
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[05/22/2022-11:18:38] [TRT] [I] [MemUsageChange] Init CUDA: CPU +457, GPU +0, now: CPU 550, GPU 354 (MiB)
+[05/22/2022-11:18:38] [TRT] [I] Loaded engine size: 17 MiB
+[05/22/2022-11:18:39] [TRT] [I] [MemUsageChange] Init cuBLAS/cuBLASLt: CPU +850, GPU +368, now: CPU 1426, GPU 740 (MiB)
+[05/22/2022-11:18:39] [TRT] [I] [MemUsageChange] Init cuDNN: CPU +126, GPU +58, now: CPU 1552, GPU 798 (MiB)
+[05/22/2022-11:18:39] [TRT] [I] [MemUsageChange] TensorRT-managed allocation in engine deserialization: CPU +0, GPU +14, now: CPU 0, GPU 14 (MiB)
+[05/22/2022-11:18:40] [TRT] [I] [MemUsageChange] Init cuBLAS/cuBLASLt: CPU +0, GPU +10, now: CPU 3366, GPU 1696 (MiB)
+[05/22/2022-11:18:40] [TRT] [I] [MemUsageChange] Init cuDNN: CPU +1, GPU +8, now: CPU 3367, GPU 1704 (MiB)
+[05/22/2022-11:18:40] [TRT] [I] [MemUsageChange] TensorRT-managed allocation in IExecutionContext creation: CPU +0, GPU +64, now: CPU 0, GPU 78 (MiB)
+</pre></div></div>
+</div>
+<p>Let’s warmup the engine by running inference once for GPU device.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">y_runtime</span><span class="o">.</span><span class="n">warmup</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<section id="Inferencing-with-TensorRT">
+<h3 id="Inferencing-with-TensorRT">Inferencing with TensorRT<a class="headerlink" href="#Inferencing-with-TensorRT" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">engine_builder</span><span class="o">.</span><span class="n">create_network</span><span class="p">(</span><span class="n">onnx_path</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="o">%%time</span>it
+<span class="n">predictions_trt</span> <span class="o">=</span> <span class="n">y_runtime</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Network Description
-Input &#39;images&#39; with shape (1, 3, 320, 320) and dtype DataType.FLOAT
-Output &#39;num_detections&#39; with shape (1,) and dtype DataType.INT32
-Output &#39;detection_boxes&#39; with shape (1, 100, 4) and dtype DataType.FLOAT
-Output &#39;detection_scores&#39; with shape (1, 100) and dtype DataType.FLOAT
-Output &#39;detection_classes&#39; with shape (1, 100) and dtype DataType.FLOAT
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[12/25/2021-03:19:38] [TRT] [I] ----------------------------------------------------------------
-[12/25/2021-03:19:38] [TRT] [I] Input filename:   yolov5n6.onnx
-[12/25/2021-03:19:38] [TRT] [I] ONNX IR version:  0.0.8
-[12/25/2021-03:19:38] [TRT] [I] Opset version:    11
-[12/25/2021-03:19:38] [TRT] [I] Producer name:
-[12/25/2021-03:19:38] [TRT] [I] Producer version:
-[12/25/2021-03:19:38] [TRT] [I] Domain:
-[12/25/2021-03:19:38] [TRT] [I] Model version:    0
-[12/25/2021-03:19:38] [TRT] [I] Doc string:
-[12/25/2021-03:19:38] [TRT] [I] ----------------------------------------------------------------
-[12/25/2021-03:19:38] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:364: Your ONNX model has been generated with INT64 weights, while TensorRT does not natively support INT64. Attempting to cast down to INT32.
-[12/25/2021-03:19:38] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:392: One or more weights outside the range of INT32 was clamped
-[12/25/2021-03:19:38] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:392: One or more weights outside the range of INT32 was clamped
-[12/25/2021-03:19:38] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:392: One or more weights outside the range of INT32 was clamped
-[12/25/2021-03:19:38] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:392: One or more weights outside the range of INT32 was clamped
-[12/25/2021-03:19:38] [TRT] [W] parsers/onnx/onnx2trt_utils.cpp:392: One or more weights outside the range of INT32 was clamped
-[12/25/2021-03:19:38] [TRT] [I] No importer registered for op: BatchedNMS_TRT. Attempting to import as plugin.
-[12/25/2021-03:19:38] [TRT] [I] Searching for plugin: BatchedNMS_TRT, plugin_version: 1, plugin_namespace:
-[12/25/2021-03:19:38] [TRT] [W] parsers/onnx/builtin_op_importers.cpp:4777: Attribute scoreBits not found in plugin node! Ensure that the plugin creator has a default value defined or the engine may fail to build.
-[12/25/2021-03:19:38] [TRT] [I] Successfully created plugin: BatchedNMS_TRT
+9.34 ms ± 145 µs per loop (mean ± std. dev. of 7 runs, 100 loops each)
 </pre></div></div>
 </div>
-<div class="nbinput docutils container">
+<div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">engine_builder</span><span class="o">.</span><span class="n">create_engine</span><span class="p">(</span><span class="n">engine_path</span><span class="p">,</span> <span class="n">precision</span><span class="o">=</span><span class="s2">&quot;fp32&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Building fp32 Engine in yolov5n6.engine
-Using fp32 mode.
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-[12/25/2021-03:19:38] [TRT] [I] [MemUsageSnapshot] Builder begin: CPU 441 MiB, GPU 4652 MiB
-[12/25/2021-03:19:40] [TRT] [W] TensorRT was linked against cuBLAS/cuBLAS LT 11.6.1 but loaded cuBLAS/cuBLAS LT 11.5.1
-[12/25/2021-03:19:40] [TRT] [I] [MemUsageChange] Init cuBLAS/cuBLASLt: CPU +232, GPU +94, now: CPU 676, GPU 4746 (MiB)
-[12/25/2021-03:19:40] [TRT] [I] [MemUsageChange] Init cuDNN: CPU +188, GPU +84, now: CPU 864, GPU 4830 (MiB)
-[12/25/2021-03:19:40] [TRT] [I] Local timing cache in use. Profiling results in this builder pass will not be stored.
-[12/25/2021-03:20:23] [TRT] [I] [BlockAssignment] Algorithm Linear took 0.05512ms to assign 158 blocks to 158 nodes requiring 4327119366 bytes.
-[12/25/2021-03:20:23] [TRT] [I] Total Activation Memory: 32152070
-[12/25/2021-03:20:23] [TRT] [I] Detected 1 inputs and 4 output network tensors.
-</pre></div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Serialize engine success, saved as yolov5n6.engine
-</pre></div></div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-[12/25/2021-03:20:29] [TRT] [I] Total Host Persistent Memory: 168176
-[12/25/2021-03:20:29] [TRT] [I] Total Device Persistent Memory: 5879296
-[12/25/2021-03:20:29] [TRT] [I] Total Scratch Memory: 12998656
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageStats] Peak memory usage of TRT CPU/GPU memory allocators: CPU 3 MiB, GPU 535 MiB
-[12/25/2021-03:20:29] [TRT] [I] [BlockAssignment] Algorithm ShiftNTopDown took 33.9313ms to assign 8 blocks to 159 nodes requiring 17336832 bytes.
-[12/25/2021-03:20:29] [TRT] [W] TensorRT was linked against cuBLAS/cuBLAS LT 11.6.1 but loaded cuBLAS/cuBLAS LT 11.5.1
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageChange] Init cuBLAS/cuBLASLt: CPU +0, GPU +8, now: CPU 2758, GPU 5710 (MiB)
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageChange] Init cuDNN: CPU +0, GPU +8, now: CPU 2758, GPU 5718 (MiB)
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageSnapshot] Builder end: CPU 2757 MiB, GPU 5684 MiB
-</pre></div></div>
-</div>
-</div>
-</div>
-<div class="section" id="Test-the-exported-TensorRT-engine">
-<h2>Test the exported TensorRT engine<a class="headerlink" href="#Test-the-exported-TensorRT-engine" title="Permalink to this headline">¶</a></h2>
-<p>Let’s load the TensorRT engine firstly.</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">yolort.runtime</span> <span class="kn">import</span> <span class="n">PredictorTRT</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predictions_trt</span> <span class="o">=</span> <span class="n">y_runtime</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">engine</span> <span class="o">=</span> <span class="n">PredictorTRT</span><span class="p">(</span><span class="n">engine_path</span><span class="p">,</span> <span class="n">device</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predictions_trt</span>
 </pre></div>
 </div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area stderr docutils container">
-<div class="highlight"><pre>
-Loading yolov5n6.engine for TensorRT inference...
-</pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-[12/25/2021-03:20:29] [TRT] [I] The logger passed into createInferRuntime differs from one already provided for an existing builder, runtime, or refitter. Uses of the global logger, returned by nvinfer1::getLogger(), will return the existing value.
-
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageChange] Init CUDA: CPU +0, GPU +0, now: CPU 2743, GPU 5668 (MiB)
-[12/25/2021-03:20:29] [TRT] [I] Loaded engine size: 14 MiB
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageSnapshot] deserializeCudaEngine begin: CPU 2758 MiB, GPU 5668 MiB
-[12/25/2021-03:20:29] [TRT] [W] TensorRT was linked against cuBLAS/cuBLAS LT 11.6.1 but loaded cuBLAS/cuBLAS LT 11.5.1
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageChange] Init cuBLAS/cuBLASLt: CPU +0, GPU +10, now: CPU 2770, GPU 5692 (MiB)
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageChange] Init cuDNN: CPU +0, GPU +8, now: CPU 2770, GPU 5700 (MiB)
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageSnapshot] deserializeCudaEngine end: CPU 2770 MiB, GPU 5682 MiB
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageSnapshot] ExecutionContext creation begin: CPU 2755 MiB, GPU 5704 MiB
-[12/25/2021-03:20:29] [TRT] [W] TensorRT was linked against cuBLAS/cuBLAS LT 11.6.1 but loaded cuBLAS/cuBLAS LT 11.5.1
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageChange] Init cuBLAS/cuBLASLt: CPU +0, GPU +10, now: CPU 2755, GPU 5714 (MiB)
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageChange] Init cuDNN: CPU +0, GPU +8, now: CPU 2755, GPU 5722 (MiB)
-[12/25/2021-03:20:29] [TRT] [I] [MemUsageSnapshot] ExecutionContext creation end: CPU 2757 MiB, GPU 5754 MiB
+[{'scores': tensor([0.83350, 0.82812, 0.78564, 0.77734, 0.46313], device='cuda:0'),
+  'labels': tensor([0, 0, 0, 5, 0], device='cuda:0', dtype=torch.int32),
+  'boxes': tensor([[220.85156, 407.53125, 345.51562, 874.96875],
+          [662.34375, 386.64844, 810.84375, 880.87500],
+          [ 57.58594, 396.98438, 214.94531, 918.00000],
+          [ 14.55469, 221.69531, 799.03125, 784.68750],
+          [ -0.94922, 553.50000,  72.45703, 874.96875]], device='cuda:0')}]
 </pre></div></div>
+</div>
+</section>
+</section>
+<section id="Predict-as-yolort">
+<h2 id="Predict-as-yolort">Predict as yolort<a class="headerlink" href="#Predict-as-yolort" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">yolort.models</span> <span class="kn">import</span> <span class="n">YOLOv5</span>
+</pre></div>
+</div>
 </div>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">engine</span><span class="o">.</span><span class="n">warmup</span><span class="p">(</span><span class="n">img_size</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="o">*</span><span class="n">img_size</span><span class="p">),</span> <span class="n">half</span><span class="o">=</span><span class="n">half</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">YOLOv5</span><span class="o">.</span><span class="n">load_from_yolov5</span><span class="p">(</span>
+    <span class="n">model_path</span><span class="p">,</span>
+    <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">),</span>
+    <span class="n">size_divisible</span><span class="o">=</span><span class="n">size_divisible</span><span class="p">,</span>
+    <span class="n">fixed_shape</span><span class="o">=</span><span class="p">(</span><span class="n">img_size</span><span class="p">,</span> <span class="n">img_size</span><span class="p">),</span>
+    <span class="n">score_thresh</span><span class="o">=</span><span class="n">score_thresh</span><span class="p">,</span>
+    <span class="n">nms_thresh</span><span class="o">=</span><span class="n">nms_thresh</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="Pre-Processing">
-<h3>Pre Processing<a class="headerlink" href="#Pre-Processing" title="Permalink to this headline">¶</a></h3>
+<section id="Inferencing-with-PyTorch">
+<h3 id="Inferencing-with-PyTorch">Inferencing with PyTorch<a class="headerlink" href="#Inferencing-with-PyTorch" title="Permalink to this headline">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">time_start</span> <span class="o">=</span> <span class="n">time_sync</span><span class="p">()</span>
-<span class="n">image</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">preprocessing</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-<span class="n">time_consumed</span> <span class="o">=</span> <span class="n">time_sync</span><span class="p">()</span> <span class="o">-</span> <span class="n">time_start</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;pre-process: </span><span class="si">{</span><span class="n">time_consumed</span> <span class="o">*</span> <span class="mi">1000</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">ms&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-pre-process: 0.865ms
-</pre></div></div>
-</div>
-</div>
-<div class="section" id="Inferencing">
-<h3>Inferencing<a class="headerlink" href="#Inferencing" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">time_start</span> <span class="o">=</span> <span class="n">time_sync</span><span class="p">()</span>
-<span class="n">tensorrt_outs</span> <span class="o">=</span> <span class="n">engine</span><span class="o">.</span><span class="n">run_on_image</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-<span class="n">time_consumed</span> <span class="o">=</span> <span class="n">time_sync</span><span class="p">()</span> <span class="o">-</span> <span class="n">time_start</span>
-<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;inference: </span><span class="si">{</span><span class="n">time_consumed</span> <span class="o">*</span> <span class="mi">1000</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">ms&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-<div class="nboutput nblast docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<div class="highlight"><pre>
-inference: 3.713ms
-</pre></div></div>
-</div>
-</div>
-</div>
-<div class="section" id="Predict-as-yolort">
-<h2>Predict as yolort<a class="headerlink" href="#Predict-as-yolort" title="Permalink to this headline">¶</a></h2>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="kn">from</span> <span class="nn">yolort.models</span> <span class="kn">import</span> <span class="n">YOLO</span>
-</pre></div>
-</div>
-</div>
-<div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">model</span> <span class="o">=</span> <span class="n">YOLO</span><span class="o">.</span><span class="n">load_from_yolov5</span><span class="p">(</span>
-    <span class="n">checkpoint_path</span><span class="p">,</span>
-    <span class="n">score_thresh</span><span class="o">=</span><span class="n">score_thresh</span><span class="p">,</span>
-    <span class="n">nms_thresh</span><span class="o">=</span><span class="n">iou_thresh</span><span class="p">,</span>
-    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;r6.0&quot;</span><span class="p">,</span>
-<span class="p">)</span>
-
-<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">device</span><span class="p">)</span>
-<span class="n">model</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">eval</span><span class="p">()</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predictions_pt</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">img_path</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -856,72 +1070,78 @@ inference: 3.713ms
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
-
-                 from  n    params  module                                  arguments
-  0                -1  1      1760  yolort.v5.models.common.Conv            [3, 16, 6, 2, 2]
-  1                -1  1      4672  yolort.v5.models.common.Conv            [16, 32, 3, 2]
-  2                -1  1      4800  yolort.v5.models.common.C3              [32, 32, 1]
-  3                -1  1     18560  yolort.v5.models.common.Conv            [32, 64, 3, 2]
-  4                -1  2     29184  yolort.v5.models.common.C3              [64, 64, 2]
-  5                -1  1     73984  yolort.v5.models.common.Conv            [64, 128, 3, 2]
-  6                -1  3    156928  yolort.v5.models.common.C3              [128, 128, 3]
-  7                -1  1    221568  yolort.v5.models.common.Conv            [128, 192, 3, 2]
-  8                -1  1    167040  yolort.v5.models.common.C3              [192, 192, 1]
-  9                -1  1    442880  yolort.v5.models.common.Conv            [192, 256, 3, 2]
- 10                -1  1    296448  yolort.v5.models.common.C3              [256, 256, 1]
- 11                -1  1    164608  yolort.v5.models.common.SPPF            [256, 256, 5]
- 12                -1  1     49536  yolort.v5.models.common.Conv            [256, 192, 1, 1]
- 13                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
- 14           [-1, 8]  1         0  yolort.v5.models.common.Concat          [1]
- 15                -1  1    203904  yolort.v5.models.common.C3              [384, 192, 1, False]
- 16                -1  1     24832  yolort.v5.models.common.Conv            [192, 128, 1, 1]
- 17                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
- 18           [-1, 6]  1         0  yolort.v5.models.common.Concat          [1]
- 19                -1  1     90880  yolort.v5.models.common.C3              [256, 128, 1, False]
- 20                -1  1      8320  yolort.v5.models.common.Conv            [128, 64, 1, 1]
- 21                -1  1         0  torch.nn.modules.upsampling.Upsample    [None, 2, &#39;nearest&#39;]
- 22           [-1, 4]  1         0  yolort.v5.models.common.Concat          [1]
- 23                -1  1     22912  yolort.v5.models.common.C3              [128, 64, 1, False]
- 24                -1  1     36992  yolort.v5.models.common.Conv            [64, 64, 3, 2]
- 25          [-1, 20]  1         0  yolort.v5.models.common.Concat          [1]
- 26                -1  1     74496  yolort.v5.models.common.C3              [128, 128, 1, False]
- 27                -1  1    147712  yolort.v5.models.common.Conv            [128, 128, 3, 2]
- 28          [-1, 16]  1         0  yolort.v5.models.common.Concat          [1]
- 29                -1  1    179328  yolort.v5.models.common.C3              [256, 192, 1, False]
- 30                -1  1    332160  yolort.v5.models.common.Conv            [192, 192, 3, 2]
- 31          [-1, 12]  1         0  yolort.v5.models.common.Concat          [1]
- 32                -1  1    329216  yolort.v5.models.common.C3              [384, 256, 1, False]
- 33  [23, 26, 29, 32]  1    164220  yolort.v5.models.yolo.Detect            [80, [[19, 27, 44, 40, 38, 94], [96, 68, 86, 152, 180, 137], [140, 301, 303, 264, 238, 542], [436, 615, 739, 380, 925, 792]], [64, 128, 192, 256]]
-Model Summary: 355 layers, 3246940 parameters, 3246940 gradients, 4.6 GFLOPs
-
+/root/miniconda3/envs/torch/lib/python3.8/site-packages/torch/functional.py:568: UserWarning: torch.meshgrid: in an upcoming release, it will be required to pass the indexing argument. (Triggered internally at  ../aten/src/ATen/native/TensorShape.cpp:2228.)
+  return _VF.meshgrid(tensors, **kwargs)  # type: ignore[attr-defined]
 </pre></div></div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
-</pre></div>
-</div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">with</span> <span class="n">torch</span><span class="o">.</span><span class="n">no_grad</span><span class="p">():</span>
-    <span class="n">yolort_outs</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">image</span><span class="p">)</span>
-</pre></div>
-</div>
-</div>
-</div>
-<div class="section" id="Varify-the-detection-results-between-yolort-and-TensorRT">
-<h2>Varify the detection results between yolort and TensorRT<a class="headerlink" href="#Varify-the-detection-results-between-yolort-and-TensorRT" title="Permalink to this headline">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Testing boxes</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_close</span><span class="p">(</span><span class="n">yolort_outs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;boxes&quot;</span><span class="p">],</span> <span class="n">tensorrt_outs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;boxes&quot;</span><span class="p">])</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predictions_trt</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[{'scores': tensor([0.83350, 0.82812, 0.78564, 0.77734, 0.46313], device='cuda:0'),
+  'labels': tensor([0, 0, 0, 5, 0], device='cuda:0', dtype=torch.int32),
+  'boxes': tensor([[220.85156, 407.53125, 345.51562, 874.96875],
+          [662.34375, 386.64844, 810.84375, 880.87500],
+          [ 57.58594, 396.98438, 214.94531, 918.00000],
+          [ 14.55469, 221.69531, 799.03125, 784.68750],
+          [ -0.94922, 553.50000,  72.45703, 874.96875]], device='cuda:0')}]
+</pre></div></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">predictions_pt</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+[{'scores': tensor([0.83449, 0.82892, 0.78632, 0.78010, 0.46298], device='cuda:0'),
+  'labels': tensor([0, 0, 0, 5, 0], device='cuda:0'),
+  'boxes': tensor([[220.82433, 407.41098, 345.70523, 874.90283],
+          [662.59210, 386.32590, 810.79279, 880.39319],
+          [ 57.56377, 397.15387, 215.05116, 918.31415],
+          [ 14.63786, 221.99287, 798.34180, 784.72064],
+          [ -1.00095, 553.44971,  72.44920, 874.67841]], device='cuda:0')}]
+</pre></div></div>
+</div>
+</section>
+</section>
+<section id="Verify-the-detection-results-between-yolort-and-TensorRT">
+<h2 id="Verify-the-detection-results-between-yolort-and-TensorRT">Verify the detection results between yolort and TensorRT<a class="headerlink" href="#Verify-the-detection-results-between-yolort-and-TensorRT" title="Permalink to this headline">¶</a></h2>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Testing boxes</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_close</span><span class="p">(</span><span class="n">predictions_pt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"boxes"</span><span class="p">]</span> <span class="o">/</span> <span class="n">img_size</span><span class="p">,</span>
+                           <span class="n">predictions_trt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"boxes"</span><span class="p">]</span> <span class="o">/</span> <span class="n">img_size</span><span class="p">,</span>
+                           <span class="n">atol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 <span class="c1"># Testing scores</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_close</span><span class="p">(</span><span class="n">yolort_outs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;scores&quot;</span><span class="p">],</span> <span class="n">tensorrt_outs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;scores&quot;</span><span class="p">])</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_close</span><span class="p">(</span><span class="n">predictions_pt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"scores"</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                           <span class="n">predictions_trt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"scores"</span><span class="p">]</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="n">decimals</span><span class="o">=</span><span class="mi">2</span><span class="p">),</span>
+                           <span class="n">atol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 <span class="c1"># Testing labels</span>
-<span class="n">torch</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_close</span><span class="p">(</span><span class="n">yolort_outs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;labels&quot;</span><span class="p">],</span> <span class="n">tensorrt_outs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">&quot;labels&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">))</span>
+<span class="n">torch</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_close</span><span class="p">(</span><span class="n">predictions_pt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"labels"</span><span class="p">],</span>
+                           <span class="n">predictions_trt</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s2">"labels"</span><span class="p">]</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">),</span>
+                           <span class="n">atol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">)</span>
 
-<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Exported model has been tested, and the result looks good!&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">"Exported model has been tested, and the result looks good!"</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -933,51 +1153,50 @@ Model Summary: 355 layers, 3246940 parameters, 3246940 gradients, 4.6 GFLOPs
 Exported model has been tested, and the result looks good!
 </pre></div></div>
 </div>
-</div>
-<div class="section" id="Visualise-the-TensorRT-detections">
-<h2>Visualise the TensorRT detections<a class="headerlink" href="#Visualise-the-TensorRT-detections" title="Permalink to this headline">¶</a></h2>
-<p>Hah, that’s the trick to rescale the box correctly</p>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</section>
+<section id="Visualize-the-TensorRT-detections">
+<h2 id="Visualize-the-TensorRT-detections">Visualize the TensorRT detections<a class="headerlink" href="#Visualize-the-TensorRT-detections" title="Permalink to this headline">¶</a></h2>
+<p>Get label names first.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="n">boxes</span> <span class="o">=</span> <span class="n">scale_coords</span><span class="p">(</span><span class="n">image</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">2</span><span class="p">:],</span> <span class="n">tensorrt_outs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;boxes&#39;</span><span class="p">],</span> <span class="n">img_raw</span><span class="o">.</span><span class="n">shape</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
-<span class="n">labels</span> <span class="o">=</span> <span class="n">tensorrt_outs</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;labels&#39;</span><span class="p">]</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># label_path = "https://raw.githubusercontent.com/zhiqwang/yolov5-rt-stack/main/notebooks/assets/coco.names"</span>
+<span class="n">label_source</span> <span class="o">=</span> <span class="s2">"https://huggingface.co/spaces/zhiqwang/assets/resolve/main/coco.names"</span>
+<span class="n">label_path</span> <span class="o">=</span> <span class="n">label_source</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">safe_download</span><span class="p">(</span><span class="n">label_path</span><span class="p">,</span> <span class="n">label_source</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
-</pre></div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="c1"># Get label names</span>
-<span class="kn">import</span> <span class="nn">requests</span>
-
-<span class="c1"># label_path = &quot;https://raw.githubusercontent.com/zhiqwang/yolov5-rt-stack/main/notebooks/assets/coco.names&quot;</span>
-<span class="n">label_path</span> <span class="o">=</span> <span class="s2">&quot;https://gitee.com/zhiqwang/yolov5-rt-stack/raw/main/notebooks/assets/coco.names&quot;</span>
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">label_path</span><span class="p">)</span>
-<span class="n">names</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">text</span>
-
-<span class="n">LABELS</span> <span class="o">=</span> <span class="p">[]</span>
-
-<span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">names</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">):</span>
-    <span class="n">LABELS</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">label</span><span class="p">)</span>
-
-<span class="n">COLORS</span> <span class="o">=</span> <span class="n">color_list</span><span class="p">()</span>
-</pre></div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Downloading https://huggingface.co/spaces/zhiqwang/assets/resolve/main/coco.names to coco.names...
+</pre></div></div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<script type="application/vnd.jupyter.widget-view+json">{"model_id": "9a969e03e73b4393bbcca6bea0ff1dc1", "version_major": 2, "version_minor": 0}</script></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
-<span></span><span class="k">for</span> <span class="n">box</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">boxes</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="n">labels</span><span class="o">.</span><span class="n">to</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">torch</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span><span class="o">.</span><span class="n">tolist</span><span class="p">()):</span>
-    <span class="n">img_raw</span> <span class="o">=</span> <span class="n">plot_one_box</span><span class="p">(</span><span class="n">box</span><span class="p">,</span> <span class="n">img_raw</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">COLORS</span><span class="p">[</span><span class="n">label</span> <span class="o">%</span> <span class="nb">len</span><span class="p">(</span><span class="n">COLORS</span><span class="p">)],</span> <span class="n">label</span><span class="o">=</span><span class="n">LABELS</span><span class="p">[</span><span class="n">label</span><span class="p">])</span>
-
-<span class="n">cv2_imshow</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">imshow_scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">v</span> <span class="o">=</span> <span class="n">Visualizer</span><span class="p">(</span><span class="n">img_raw</span><span class="p">,</span> <span class="n">metalabels</span><span class="o">=</span><span class="n">label_path</span><span class="p">)</span>
+<span class="n">v</span><span class="o">.</span><span class="n">draw_instance_predictions</span><span class="p">(</span><span class="n">predictions_trt</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">v</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">scale</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -985,100 +1204,71 @@ Exported model has been tested, and the result looks good!
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="../_images/notebooks_onnx-graphsurgeon-inference-tensorrt_37_0.png" src="../_images/notebooks_onnx-graphsurgeon-inference-tensorrt_37_0.png" />
+<img alt="../_images/notebooks_onnx-graphsurgeon-inference-tensorrt_33_0.png" src="../_images/notebooks_onnx-graphsurgeon-inference-tensorrt_33_0.png"/>
 </div>
 </div>
-</div>
-</div>
+</section>
+</section>
 <p>View this document as a notebook:
 <a class="reference external" href="https://github.com/zhiqwang/yolov5-rt-stack/blob/main/notebooks/onnx-graphsurgeon-inference-tensorrt.ipynb">https://github.com/zhiqwang/yolov5-rt-stack/blob/main/notebooks/onnx-graphsurgeon-inference-tensorrt.ipynb</a></p>
-<hr class="docutils" />
+<hr class="docutils"/>
 
-            <div class="clearer"></div>
-          </div>
+
+          </article>
         </div>
       </div>
-      <div class="clearer"></div>
+    </main>
+  </div>
+  <footer class="md-footer">
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+          
+            <a href="export-onnx-inference-onnxruntime.html" title="Deploying yolort on ONNX Runtime"
+               class="md-flex md-footer-nav__link md-footer-nav__link--prev"
+               rel="prev">
+              <div class="md-flex__cell md-flex__cell--shrink">
+                <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+              </div>
+              <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+                <span class="md-flex__ellipsis">
+                  <span
+                      class="md-footer-nav__direction"> Previous </span> Deploying yolort on ONNX Runtime </span>
+              </div>
+            </a>
+          
+          
+            <a href="export-relay-inference-tvm.html" title="Deploying yolort on TVM"
+               class="md-flex md-footer-nav__link md-footer-nav__link--next"
+               rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title"><span
+                class="md-flex__ellipsis"> <span
+                class="md-footer-nav__direction"> Next </span> Deploying yolort on TVM </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink"><i
+                class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          
+        </a>
+        
+      </nav>
     </div>
-
-    <nav class="relbar">
-      <a class="previous" href="export-onnx-inference-onnxruntime.html" aria-label="Previous topic" >
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M257.5 445.1l-22.2 22.2c-9.4 9.4-24.6 9.4-33.9 0L7 273c-9.4-9.4-9.4-24.6 0-33.9L201.4 44.7c9.4-9.4 24.6-9.4 33.9 0l22.2 22.2c9.5 9.5 9.3 25-.4 34.3L136.6 216H424c13.3 0 24 10.7 24 24v32c0 13.3-10.7 24-24 24H136.6l120.5 114.8c9.8 9.3 10 24.8.4 34.3z"/></svg>
-        </div>
-        <div class="title">
-          <span class="text">
-            <span class="direction">previous</span>
-            Deploying yolort on ONNXRuntime
-          </span>
-        </div>
-      </a>
-      <a class="next" href="export-relay-inference-tvm.html" aria-label="Next topic" >
-        <div class="title">
-          <span class="text">
-            <span class="direction">next</span>
-            Deploying yolort on TVM
-          </span>
-        </div>
-        <div class="icon">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!-- Font Awesome Free 5.15.4 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) --><path d="M190.5 66.9l22.2-22.2c9.4-9.4 24.6-9.4 33.9 0L441 239c9.4 9.4 9.4 24.6 0 33.9L246.6 467.3c-9.4 9.4-24.6 9.4-33.9 0l-22.2-22.2c-9.5-9.5-9.3-25 .4-34.3L311.4 296H24c-13.3 0-24-10.7-24-24v-32c0-13.3 10.7-24 24-24h287.4L190.9 101.2c-9.8-9.3-10-24.8-.4-34.3z"/></svg>
-        </div>
-      </a>
-    </nav>
-
-
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-
-            <p class="logo"><a href="../index.html">
-              <img class="logo" src="../_static/yolort_logo.png" alt="Logo"/>
-            </a></p>
-          <div class="sidebar-resize-handle"></div>
-
-<h3><a href="../index.html">Table of Contents</a></h3>
-<p class="caption"><span class="caption-text">Get started</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
-</ul>
-<p class="caption"><span class="caption-text">Tutorials</span></p>
-<ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="inference-pytorch-export-libtorch.html">Intuition for yolort</a></li>
-<li class="toctree-l1"><a class="reference internal" href="how-to-align-with-ultralytics-yolov5.html">How to align with ultralytics yolov5</a></li>
-<li class="toctree-l1"><a class="reference internal" href="anchor-label-assignment-visualization.html">Visualize the anchor-target assignment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="model-graph-visualization.html">Visualize model graph</a></li>
-<li class="toctree-l1"><a class="reference internal" href="export-onnx-inference-onnxruntime.html">Deploying yolort on ONNXRuntime</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">TensorRT Python Inference for yolort</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#Prepare-image-and-model-weights-to-test">Prepare image and model weights to test</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Export-to-ONNX-and-TensorRT-model">Export to ONNX and TensorRT model</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Test-the-exported-TensorRT-engine">Test the exported TensorRT engine</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Predict-as-yolort">Predict as yolort</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Varify-the-detection-results-between-yolort-and-TensorRT">Varify the detection results between yolort and TensorRT</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#Visualise-the-TensorRT-detections">Visualise the TensorRT detections</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="export-relay-inference-tvm.html">Deploying yolort on TVM</a></li>
-</ul>
-<p class="caption"><span class="caption-text">API Reference</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../models.html">Models and pre-trained weights</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../yolov5.html">Modules and utils for YOLOv5</a></li>
-</ul>
-
-<hr class="docutils" />
-<ul>
-  <li class="toctree-l1"><a class="reference internal" href="../genindex.html" accesskey="I">General Index</a></li>
-  <li class="toctree-l1"><a class="reference internal" href="../py-modindex.html">Python Module Index</a></li>
-</ul>
-<div id="ethical-ad-placement"></div>
+    <div class="md-footer-meta md-typeset">
+      <div class="md-footer-meta__inner md-grid">
+        <div class="md-footer-copyright">
+          <div class="md-footer-copyright__highlight">
+              &#169; Copyright 2022, yolort team.
+              
+          </div>
+            Created using
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 4.5.0.
+             and
+            <a href="https://github.com/bashtage/sphinx-material/">Material for
+              Sphinx</a>
         </div>
       </div>
-    <footer role="contentinfo">
-      &#169; Copyright 2020-2021, yolort community.
-      Created using <a class="reference external" href="https://www.sphinx-doc.org/">Sphinx</a> 3.5.4.
-      <a class="reference external" href="https://insipid-sphinx-theme.readthedocs.io/">Insipid Theme</a>.
-<a class="reference internal" href="../_sources/notebooks/onnx-graphsurgeon-inference-tensorrt.ipynb.txt" rel="nofollow">Show Source</a>.
-    </footer>
-    <div class="sidebar-resize-handle"></div>
-    <div id="overlay"></div>
+    </div>
+  </footer>
+  <script src="../_static/javascripts/application.js"></script>
+  <script>app.initialize({version: "1.0.4", url: {base: ".."}})</script>
   </body>
 </html>
