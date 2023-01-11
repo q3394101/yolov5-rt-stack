@@ -51,12 +51,9 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/material.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
-    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
     <script src="_static/doctools.js"></script>
     <script src="_static/sphinx_highlight.js"></script>
-    <link rel="shortcut icon" href="_static/favicon.svg"/>
+    <link rel="icon" href="_static/favicon.svg"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="yolort.models" href="models.html" />
@@ -86,8 +83,7 @@
         <a href="index.html" title="yolort  documentation"
            class="md-header-nav__button md-logo">
           
-              <img src="_static/yolort_logo_icon.png" height="26"
-                   alt="yolort documentation logo">
+            &nbsp;
           
         </a>
       </div>
@@ -159,7 +155,7 @@
   <label class="md-nav__title md-nav__title--site" for="__drawer">
     <a href="index.html" title="yolort documentation" class="md-nav__button md-logo">
       
-        <img src="_static/yolort_logo_icon.png" alt=" logo" width="48" height="48">
+        <img src="_static/" alt=" logo" width="48" height="48">
       
     </a>
     <a href="index.html"
@@ -426,13 +422,7 @@
         </li>
         <li class="md-nav__item"><a href="#yolort.v5.GhostConv" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GhostConv</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#yolort.v5.Model" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#yolort.v5.Model.fuse" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model.fuse()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#yolort.v5.Model.info" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model.info()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#yolort.v5.Model" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#yolort.v5.SPP" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">SPP</span></code></a>
         </li>
@@ -639,21 +629,7 @@
     
     
       <a href="#yolort.v5.Model" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a>
-      <ul class="md-nav__list"> 
-    <li class="md-nav__item">
-    
-    
-      <a href="#yolort.v5.Model.fuse" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model.fuse()</span></code></a>
       
-    
-    </li>
-    <li class="md-nav__item">
-    
-    
-      <a href="#yolort.v5.Model.info" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model.info()</span></code></a>
-      
-    
-    </li></ul>
     
     </li>
     <li class="md-nav__item">
@@ -826,13 +802,7 @@
         </li>
         <li class="md-nav__item"><a href="#yolort.v5.GhostConv" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">GhostConv</span></code></a>
         </li>
-        <li class="md-nav__item"><a href="#yolort.v5.Model" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a><nav class="md-nav">
-              <ul class="md-nav__list">
-        <li class="md-nav__item"><a href="#yolort.v5.Model.fuse" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model.fuse()</span></code></a>
-        </li>
-        <li class="md-nav__item"><a href="#yolort.v5.Model.info" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model.info()</span></code></a>
-        </li></ul>
-            </nav>
+        <li class="md-nav__item"><a href="#yolort.v5.Model" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">Model</span></code></a>
         </li>
         <li class="md-nav__item"><a href="#yolort.v5.SPP" class="md-nav__link"><code class="docutils literal notranslate"><span class="pre">SPP</span></code></a>
         </li>
@@ -1073,17 +1043,10 @@ are [“r3.1”, “r4.0”]. Default: “r4.0”.</p></li>
 <dt class="sig sig-object py" id="yolort.v5.GhostConv">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">yolort.v5.</span></span><span class="sig-name descname"><span class="pre">GhostConv</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">c1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">s</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">g</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">act</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/yolort/v5/models/common.html#GhostConv"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yolort.v5.GhostConv" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
-<dl class="py class">
+<dl class="py attribute">
 <dt class="sig sig-object py" id="yolort.v5.Model">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">yolort.v5.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cfg</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'yolov5s.yaml'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ch</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">anchors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/yolort/v5/models/yolo.html#Model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yolort.v5.Model" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="py method">
-<dt class="sig sig-object py" id="yolort.v5.Model.fuse">
-<span class="sig-name descname"><span class="pre">fuse</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/yolort/v5/models/yolo.html#Model.fuse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yolort.v5.Model.fuse" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-<dl class="py method">
-<dt class="sig sig-object py" id="yolort.v5.Model.info">
-<span class="sig-name descname"><span class="pre">info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">verbose</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">640</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/yolort/v5/models/yolo.html#Model.info"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#yolort.v5.Model.info" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<span class="sig-prename descclassname"><span class="pre">yolort.v5.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><a class="headerlink" href="#yolort.v5.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>alias of <code class="xref py py-class docutils literal notranslate"><span class="pre">DetectionModel</span></code></p>
 </dd></dl>
 <dl class="py class">
 <dt class="sig sig-object py" id="yolort.v5.SPP">
@@ -1208,11 +1171,11 @@ available for inference with AutoShape attached for versions v6.0 (v6.1).</p>
       <div class="md-footer-meta__inner md-grid">
         <div class="md-footer-copyright">
           <div class="md-footer-copyright__highlight">
-              &#169; Copyright 2022, yolort team.
+              &#169; Copyright 2023, yolort team.
               
           </div>
             Created using
-            <a href="http://www.sphinx-doc.org/">Sphinx</a> 5.2.3.
+            <a href="http://www.sphinx-doc.org/">Sphinx</a> 6.1.3.
              and
             <a href="https://github.com/bashtage/sphinx-material/">Material for
               Sphinx</a>
